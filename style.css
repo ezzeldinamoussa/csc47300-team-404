@@ -26,3 +26,8 @@ body {
 .vertical-menu a:hover {
   background-color: #ddd;
 }
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
