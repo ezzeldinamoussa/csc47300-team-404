@@ -23,7 +23,7 @@ StreakQuest isn’t just a planner — it’s a competition. By turning simple t
 | --- | ---|
 |🏠 index.html|The homepage: Introduces the app, its purpose, and includes navigation links to all other pages.|
 |📝 tasks.html|Displays the user’s daily tasks and progress. Serves as the main task-tracking page.|
-|➕ add-task.html &nbsp;|Concept page for adding new tasks. Includes input fields for task name, difficulty level.|
+|➕ add-task.html&nbsp;|Concept page for adding new tasks. Includes input fields for task name, difficulty level.|
 |👥 friends.html|Shows the user’s friends list, their current streaks, and leaderboard standings.|
 |📊 stats.html|Displays user stats such as total points, streak count, and unlocked badges or rewards.|
 |🎨 style.css|Handles all styling for the site — layout, color palette, fonts, and responsive design.|
