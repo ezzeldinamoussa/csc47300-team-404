@@ -1,3 +1,19 @@
 body {
   font-family:'Times New Roman', Times, serif;
 }
+
+.vertical-menu a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+}
+
+.vertical-menu a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.vertical-menu a:hover {
+  background-color: #ddd;
+}
