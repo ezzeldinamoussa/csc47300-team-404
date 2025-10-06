@@ -1,13 +1,5 @@
 body {
   font-family: "Times New Roman", Times, serif;
-  background-color: #f5f5f5;
-  color: #222;
-  margin: 0;
-  padding: 20px;
-}
-
-h1, h2 {
-  margin-bottom: 10px;
 }
 
 .container {
@@ -100,71 +92,4 @@ footer {
 
 .add-task:hover {
   background: #419544;
-}
-
-.task-section {
-  background-color: #fff;
-  padding: 20px;
-  margin-bottom: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.task-header button {
-  padding: 6px 12px;
-  background-color: #7c3aed;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-ul.task-list {
-  list-style: none;
-  padding: 0;
-}
-
-li.task-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f0f0f0;
-  padding: 10px;
-  margin-bottom: 8px;
-  border-radius: 6px;
-}
-
-.task-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.task-info span {
-  font-size: 14px;
-  color: #555;
-}
-
-.task-actions button {
-  margin-left: 8px;
-  padding: 4px 8px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.complete-btn {
-  background-color: #22c55e;
-  color: #fff;
-}
-
-.cancel-btn {
-  background-color: #ef4444;
-  color: #fff;
 }
