@@ -1,26 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>Add Task</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Add Task</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="vertical-menu">
+        <a href="index.html">Home</a>
+        <a href="tasks.html">Tasks</a>
+        <a href="add-task.html" class="active">Add Task</a>
+        <a href="friends.html">Friends</a>
+        <a href="stats.html">Stats</a>
+      </nav>
 
-  <div class="container">
-    <nav class="vertical-menu">
-      <a href="index.html">Home</a>
-      <a href="tasks.html">Tasks</a>
-      <a href="friends.html">Friends</a>
-      <a href="stats.html">Stats</a>
-    </nav>
-
-    <div class="main-content">
-      <h1>Add Task</h1>
-
+      <div class="main-content">
+        <h1>Add Task</h1>
+        <div class="task-container">
+          <div class="tasks">
+          <h2>Today's Tasks</h2>
+          <ul>
+            <li>Clean dishes</li>
+            <li>Organize closet</li>
+            <li>Complete a leetcode</li>
+          </ul>
+          </div>
+          <div class="tasks">
+          <h2>Tomorrow's Tasks</h2>
+          <ul>
+            <li>Walk the dog</li>
+          </ul>
+          <button class="add-task">+ Add task</button>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-  
-</body>
+  </body>
 </html>
