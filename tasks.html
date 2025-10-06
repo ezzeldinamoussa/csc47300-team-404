@@ -19,13 +19,20 @@
     <div class="main-content">
       <h1>StreakQuest - Tasks</h1>
 
-      <!-- Today’s Tasks -->
+      <!-- Today's Tasks -->
       <section class="task-section">
         <div class="task-header">
           <h2>Today's Tasks</h2>
           <a href="add-task.html"><button>Add Task</button></a>
         </div>
-        <ul class="task-list">
+  
+        <!-- Progress Bar -->
+        <div class="progress-container">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p id="progress-text">0% Complete</p>
+  
+        <ul id="today-list" class="task-list">
           <li class="task-item">
             <div class="task-info">
               <strong>Finish math homework</strong>
@@ -55,14 +62,15 @@
           </li>
         </ul>
       </section>
-
-      <!-- Tomorrow’s Tasks -->
+  
+      <!-- Tomorrow's Tasks -->
       <section class="task-section">
         <div class="task-header">
           <h2>Tomorrow's Tasks</h2>
           <a href="add-task.html"><button>Add Task</button></a>
         </div>
-        <ul class="task-list">
+  
+        <ul id="tomorrow-list" class="task-list">
           <li class="task-item">
             <div class="task-info">
               <strong>Read 20 pages of book</strong>
