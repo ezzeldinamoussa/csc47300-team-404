@@ -21,9 +21,12 @@
         <a href="index.html" class="nav-button">Logout</a>
     </nav>
   </header>
-  <main class="app-container">
-    <div class="tasks-page">
 
+  <main class="app-container">
+    <div class="tasks-layout">
+
+      <!-- Main Tasks Area -->
+      <div class="tasks-page">
         <!-- Today's Tasks Section -->
         <section class="tasks-section">
           <div class="section-header">
@@ -61,6 +64,10 @@
             <button class="add-task-btn" data-list="tomorrow">+ Add Task</button>
           </div>
 
+          <div class="countdown-timer">
+            <p>Time left to edit: <span id="countdown">00:00:00</span></p>
+          </div>
+
           <ul id="tomorrow-tasks" class="task-list">
             <li class="task-item" data-status="pending">
               <div class="task-info">
@@ -79,35 +86,35 @@
           </ul>
         </section>
       </div>
+
+      <!-- Add Task Sidebar -->
+      <aside id="addTaskSidebar" class="sidebar">
+        <div class="sidebar-content">
+          <span class="close-btn">&times;</span>
+          <h3>Add a New Task</h3>
+          <form id="addTaskForm">
+            <label for="taskName">Task Name:</label>
+            <input type="text" id="taskName" required>
+
+            <label for="taskDifficulty">Difficulty:</label>
+            <select id="taskDifficulty">
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+
+            <label for="taskList">Add to:</label>
+            <select id="taskList">
+              <option value="today">Today's Tasks</option>
+              <option value="tomorrow">Tomorrow's Tasks</option>
+            </select>
+
+            <button type="submit" class="submit-btn">Add Task</button>
+          </form>
+        </div>
+      </aside>
     </div>
-  </div>
-
-  <!-- Add Task Popup Modal -->
-  <div id="addTaskModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h3>Add a New Task</h3>
-      <form id="addTaskForm">
-        <label for="taskName">Task Name:</label>
-        <input type="text" id="taskName" required>
-
-        <label for="taskDifficulty">Difficulty:</label>
-        <select id="taskDifficulty">
-          <option value="Easy">Easy</option>
-          <option value="Medium">Medium</option>
-          <option value="Hard">Hard</option>
-        </select>
-
-        <label for="taskList">Add to:</label>
-        <select id="taskList">
-          <option value="today">Today's Tasks</option>
-          <option value="tomorrow">Tomorrow's Tasks</option>
-        </select>
-
-        <button type="submit" class="submit-btn">Add Task</button>
-      </form>
-    </div>
-  </div>
+  </main>
 
   <script src="tasks.js"></script>
 </body>
