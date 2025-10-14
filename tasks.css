@@ -1,6 +1,6 @@
 /* New rule to center the main content below the header */
 .app-container {
-  max-width: 900px;
+  max-width: 2000px;
   margin: 0 auto;
   padding: 24px;
 }
