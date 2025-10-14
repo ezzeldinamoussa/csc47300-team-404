@@ -1,13 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <!-- Filler for now while signup/ log in is being worked on -->
-    <!-- so you can navigate to other pages -->
-    <a href="tasks.html">tasks</a>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="login.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-image-section">
+        <img
+          src="images/login.jpg"
+          alt="Login illustration"
+          class="login-image"
+        />
+      </div>
+
+      <div class="login-form-section">
+        <div class="login-panel">
+          <h2>Welcome Back!</h2>
+
+          <form class="login-form">
+            <div class="login-input-group">
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Username or Email"
+                required
+              />
+            </div>
+
+            <div class="login-input-group">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
+                required
+              />
+            </div>
+
+            <button type="button" id="home" class="login-btn">Login</button>
+          </form>
+
+          <div class="signup-link">
+            Don't have an account? <a href="signup.html">Sign up</a>
+          </div>
+
+          <script>
+            document.getElementById("home").onclick = function () {
+              window.location.href = "tasks.html";
+            };
+          </script>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
