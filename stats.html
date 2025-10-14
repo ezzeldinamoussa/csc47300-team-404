@@ -9,45 +9,47 @@
 </head>
 <body>
 
-  <div class="container">
-    <nav class="vertical-menu">
-      <a href="index.html">Home</a>
-      <a href="tasks.html">Tasks</a>
-      <a href="friends.html">Friends</a>
-      <a href="stats.html" class="active">Stats</a>
+  <header class="page-header">
+    <nav class="nav-left">
+        <a href="index.html" class="nav-button">Home</a>
+        <a href="tasks.html" class="nav-button">Tasks</a>
+        <a href="friends.html" class="nav-button">Friends</a>
     </nav>
+    <a href="index.html" class="logo">
+      <img src="images/purple-logo.png" alt="Streak Quest Logo">
+    </a>
+    <nav class="nav-right">
+        <a href="stats.html" class="nav-button active">Stats</a>
+        <a href="index.html" class="nav-button">Logout</a>
+    </nav>
+  </header>
 
-    <div class="main-content">
-      <h1>Stats</h1>
+  <main class="app-container">
+    <h1>Stats</h1>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h2>Current Streak</h2>
-          <p class="value">7 Days 🔥</p>
-        </div>
-
-        <div class="stat-card">
-          <h2>Total Days Completed</h2>
-          <p class="value">45</p>
-        </div>
-
-        <div class="stat-card">
-          <h2>Total Tasks Completed</h2>
-          <p class="value">120</p>
-        </div>
-
-        <div class="stat-card">
-          <h2>Total Tasks Missed</h2>
-          <p class="value">15</p>
-        </div>
-
-        <div class="stat-card">
-          <h2>Current Points</h2>
-          <p class="value">830 pts ⭐</p>
-        </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h2>Current Streak</h2>
+        <p class="value">7 Days 🔥</p>
+      </div>
+      <div class="stat-card">
+        <h2>Total Days Completed</h2>
+        <p class="value">45</p>
+      </div>
+      <div class="stat-card">
+        <h2>Total Tasks Completed</h2>
+        <p class="value">120</p>
+      </div>
+      <div class="stat-card">
+        <h2>Total Tasks Missed</h2>
+        <p class="value">15</p>
+      </div>
+      <div class="stat-card">
+        <h2>Current Points</h2>
+        <p class="value">830 pts ⭐</p>
       </div>
     </div>
-  </div>
+  </main>
   
 </body>
 </html>

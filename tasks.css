@@ -1,3 +1,12 @@
+/* New rule to center the main content below the header */
+.app-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* --- OLD STYLES - No longer needed for top navigation --- */
+/*
 .container {
   display: flex;
   align-items: flex-start;
@@ -8,7 +17,6 @@
   box-sizing: border-box;
 }
 
-/* Vertical nav */
 .vertical-menu {
   width: 220px;
   min-width: 160px;
@@ -39,14 +47,14 @@
   color: #fff;
 }
 
-/* Main content buffer (this fixes content sticking to the nav line) */
 .main-content {
   flex: 1;
   padding: 24px;
   box-sizing: border-box;
   min-height: 80vh;
-  background: transparent; /* keep background from base styles */
+  background: transparent;
 }
+*/
 
 /* Tasks page content */
 .tasks-page {
@@ -192,7 +200,10 @@
 
 /* Small screens */
 @media (max-width: 800px) {
+  .app-container { padding: 12px; } /* Updated for new layout */
+  /*
   .container { flex-direction: column; padding: 12px; }
   .vertical-menu { width: 100%; position: relative; height: auto; top: 0; }
   .main-content { padding: 12px; }
+  */
 }

@@ -1,8 +1,5 @@
 body {
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
     background-color: #f3f4f6; 
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -13,6 +10,8 @@ body {
     align-items: center;
     padding: 20px 40px;
     position: relative;
+    background-color: #fff;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .logo {
@@ -20,6 +19,52 @@ body {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+}
+
+.logo img {
+    height: 100%;
+    width: auto;
+    display: block; 
+}
+
+.nav-button {
+    display: inline-block; 
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 0 5px; 
+    text-decoration: none; 
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
+    background-color: #7c3aed;
+    color: #ffffff;
+    border: none;
+}
+
+.nav-button:hover {
+    background-color: #6d28d9;
+}
+
+.nav-button:active {
+    background-color: #5b21b6;
+    transform: translateY(1px);
+}
+
+.nav-button.active {
+    background-color: #5b21b6; 
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); 
+    cursor: default;
+}
+
+.nav-button.active:hover {
+    background-color: #5b21b6;
+}
+
+.app-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+    text-align: center;
 }
 
 .hero-section {
@@ -55,39 +100,6 @@ body {
     height: auto; 
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(2,6,23,0.06);
-}
-
-.nav-button {
-    display: inline-block; 
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 0 5px; 
-    text-decoration: none; 
-    font-weight: 600;
-    transition: background-color 0.2s ease-in-out;
-    background-color: #7c3aed;
-    color: #ffffff;
-    border: none;
-}
-
-.nav-button:hover {
-    background-color: #6d28d9;
-}
-
-.nav-button:active {
-    background-color: #5b21b6;
-    transform: translateY(1px);
-}
-
-.nav-button.active {
-    background-color: #5b21b6; 
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); 
-    cursor: default;
-}
-
-.nav-button.active:hover {
-    background-color: #5b21b6;
 }
 
 .info-section {
