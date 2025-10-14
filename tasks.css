@@ -280,6 +280,14 @@
   background: #f3f4f6;
 }
 
+.history-section .task-list {
+  margin-left: 20px;
+  padding: 8px 0;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .task-list.show {
   display: flex;
 }
