@@ -6,13 +6,12 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="stats.css" />
 
-<!-- D3 v3 dependency -->
-<script src="https://d3js.org/d3.v3.min.js"></script>
+  <!-- D3 v3 dependency -->
+  <script src="https://d3js.org/d3.v3.min.js"></script>
 
-<!-- Cal-Heatmap classic build (v3.3.10 compatible with v3.1.6 docs) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
-<script src="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
-
+  <!-- Cal-Heatmap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+  <script src="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
 
   <title>Stats</title>
 </head>
@@ -36,20 +35,43 @@
     <h1>Stats</h1>
 
     <div class="stats-grid">
-      <div class="stat-card">
-        <h2>Current Streak</h2>
-        <p id="current-streak" class="value">Loading...</p>
+
+      <!-- Top card: user info -->
+      <div class="stat-card" id="user-card">
+        <div class="user-info">
+          <div class="username">
+            <h2 id="username">Loading...</h2>
+          </div>
+          <div class="user-stats">
+            <div class="user-stat">
+              <p class="stat-label">Total Stats Completed</p>
+              <p class="stat-value" id="total-stats-completed">Loading...</p>
+            </div>
+            <div class="user-stat">
+              <p class="stat-label">Total Stats Started</p>
+              <p class="stat-value" id="total-stats-started">Loading...</p>
+            </div>
+            <div class="user-stat">
+              <p class="stat-label">Current Streak</p>
+              <p class="stat-value" id="current-streak">Loading...</p>
+            </div>
+            <div class="user-stat">
+              <p class="stat-label">Highest Streak</p>
+              <p class="stat-value" id="highest-streak">Loading...</p>
+            </div>
+          </div>
+        </div>
       </div>
+
+
+
+      <!-- Middle cards -->
       <div class="stat-card">
         <h2>Total Days Completed</h2>
         <p id="days-completed" class="value">Loading...</p>
       </div>
       <div class="stat-card">
-        <h2>Total Tasks Completed</h2>
-        <p id="tasks-completed" class="value">Loading...</p>
-      </div>
-      <div class="stat-card">
-        <h2>Total Tasks Missed</h2>
+        <h2>Tasks Missed</h2>
         <p id="tasks-missed" class="value">Loading...</p>
       </div>
       <div class="stat-card">
@@ -57,11 +79,12 @@
         <p id="current-points" class="value">Loading...</p>
       </div>
 
-      <!--  Calendar Heatmap Card -->
+      <!-- Calendar heatmap card -->
       <div class="stat-card" id="calendar-card">
         <h2>Activity Calendar</h2>
         <div id="cal-heatmap" class="calendar-container"></div>
       </div>
+
     </div>
   </main>
 

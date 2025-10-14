@@ -1,10 +1,72 @@
+/* -------------------------------
+   Stats Page Grid
+---------------------------------*/
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin-top: 20px;
 }
 
+/* -------------------------------
+   Top User Card
+---------------------------------*/
+#user-card {
+  grid-column: 1 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* make username left, stats right */
+  padding: 30px 20px;
+  text-align: left;
+  background-color: #ffffff;
+  border: 2px solid #7c3aed;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.username h2 {
+  font-size: 2rem;        /* Big bold username */
+  font-weight: 800;
+  margin: 0;
+  color: #7c3aed;
+  flex-shrink: 0;          /* username keeps its size */
+}
+
+/* Spread stats evenly across the remaining space */
+.user-stats {
+  display: flex;
+  justify-content: space-between; /* distributes stats evenly */
+  flex: 1;                        /* take up remaining space */
+  margin-left: 40px;               /* space from username */
+}
+
+.user-stat {
+  text-align: center;
+  flex: 1;                        /* each stat takes equal width */
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #7c3aed;
+  margin: 5px 0 0 0;
+}
+
+/* -------------------------------
+   Middle Stat Cards
+---------------------------------*/
 .stat-card {
   background-color: #ffffff;
   border: 2px solid #7c3aed;
@@ -16,7 +78,7 @@
 
 .stat-card h2 {
   color: #333;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin-bottom: 10px;
 }
 
@@ -26,11 +88,11 @@
   font-weight: bold;
 }
 
-/* make the calendar full width and visible */
+/* -------------------------------
+   Calendar Heatmap Card
+---------------------------------*/
 #calendar-card {
-  grid-column: 1 / 3;
-  justify-self: center;
-  width: 100%;
+  grid-column: 1 / 4;
 }
 
 .calendar-container {
@@ -38,8 +100,43 @@
   min-height: 180px;
 }
 
-/* ✅ outline each day cell for visibility */
+/* Outline each day cell */
 #cal-heatmap rect {
   stroke: #d1d5db;
   stroke-width: 1px;
+}
+
+/* -------------------------------
+   Responsive
+---------------------------------*/
+@media (max-width: 900px) {
+  #user-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .username h2 {
+    margin-bottom: 20px;
+  }
+
+  .user-stats {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+    margin-left: 0;
+  }
+
+  .user-stat {
+    flex: unset;
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #calendar-card {
+    width: 100%;
+  }
 }
