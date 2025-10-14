@@ -1,13 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <!-- Filler for now while signup/ log in is being worked on -->
-    <!-- so you can navigate to other pages -->
-    <a href="tasks.html">tasks</a>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="signup.css" />
+  </head>
+  <body>
+    <div class="signup-container">
+      <div class="image-section">
+        <img
+          src="images/signup.jpg"
+          alt="Sign up illustration"
+          class="signup-image"
+        />
+      </div>
+
+      <div class="form-section">
+        <div class="signup-panel">
+          <h2>Create Account</h2>
+
+          <form class="signup-form">
+            <div class="input-group">
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Username"
+                required
+              />
+            </div>
+
+            <div class="input-group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                required
+              />
+            </div>
+
+            <div class="input-group">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
+                required
+              />
+            </div>
+
+            <div class="input-group">
+              <input
+                type="password"
+                id="confirm-password"
+                name="confirm-password"
+                placeholder="Confirm Password"
+                required
+              />
+            </div>
+
+            <button type="button" id="home" class="signup-btn">Sign Up</button>
+          </form>
+
+          <div class="login-link">
+            Already have an account? <a href="login.html">Login</a>
+          </div>
+
+          <script>
+    document.getElementById("home").onclick = function(){
+        window.location.href= "tasks.html";
+    }
+</script>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
