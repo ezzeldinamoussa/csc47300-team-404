@@ -1,16 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Elements
   const todayTasks = document.getElementById("today-tasks");
   const tomorrowTasks = document.getElementById("tomorrow-tasks");
   const progressFill = document.querySelector(".progress-fill");
   const progressText = document.querySelector(".progress-text");
 
-  const modal = document.getElementById("addTaskModal");
+  const sidebar = document.getElementById("addTaskSidebar");
   const closeBtn = document.querySelector(".close-btn");
   const addTaskButtons = document.querySelectorAll(".add-task-btn");
   const addTaskForm = document.getElementById("addTaskForm");
 
-  // Update progress bar
+  const countdownEl = document.getElementById("countdown");
+
+  // Progress Bar
   function updateProgress() {
     const tasks = todayTasks.querySelectorAll(".task-item");
     const completed = todayTasks.querySelectorAll(".task-item[data-status='completed']");
@@ -19,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     progressText.textContent = `${percent}% Complete`;
   }
 
-  // Toggle completion for today's tasks
+  // Toggle Complete
   todayTasks.addEventListener("click", (e) => {
     if (e.target.classList.contains("complete-btn")) {
       const task = e.target.closest(".task-item");
@@ -28,20 +29,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isCompleted) {
         task.dataset.status = "pending";
         e.target.textContent = "Mark Complete";
-        task.classList.remove("completed");
-        todayTasks.prepend(task); // move back to top
+        todayTasks.prepend(task);
       } else {
         task.dataset.status = "completed";
         e.target.textContent = "Undo";
-        task.classList.add("completed");
-        todayTasks.appendChild(task); // move to bottom
+        todayTasks.appendChild(task);
       }
-
       updateProgress();
     }
   });
 
-  // Toggle cancel for tomorrow's tasks
+  // Toggle Cancel
   tomorrowTasks.addEventListener("click", (e) => {
     if (e.target.classList.contains("cancel-btn")) {
       const task = e.target.closest(".task-item");
@@ -50,38 +48,31 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isCanceled) {
         task.dataset.status = "pending";
         e.target.textContent = "Cancel";
-        task.classList.remove("canceled");
         tomorrowTasks.prepend(task);
       } else {
         task.dataset.status = "canceled";
         e.target.textContent = "Undo";
-        task.classList.add("canceled");
         tomorrowTasks.appendChild(task);
       }
     }
   });
 
-  // Open modal
+  // Open Sidebar
   addTaskButtons.forEach(btn => {
     btn.addEventListener("click", () => {
-      modal.style.display = "flex";
+      sidebar.style.display = "flex";
       document.getElementById("taskList").value = btn.dataset.list;
     });
   });
 
-  // Close modal
+  // Close Sidebar
   closeBtn.addEventListener("click", () => {
-    modal.style.display = "none";
+    sidebar.style.display = "none";
   });
 
-  window.addEventListener("click", (e) => {
-    if (e.target === modal) modal.style.display = "none";
-  });
-
-  // Add task form submission
+  // Add Task
   addTaskForm.addEventListener("submit", (e) => {
     e.preventDefault();
-
     const name = document.getElementById("taskName").value.trim();
     const difficulty = document.getElementById("taskDifficulty").value;
     const list = document.getElementById("taskList").value;
@@ -109,9 +100,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     addTaskForm.reset();
-    modal.style.display = "none";
+    sidebar.style.display = "none";
   });
 
-  // Initial progress update
+  // Countdown Timer (until 11:59:59 PM)
+  function updateCountdown() {
+    const now = new Date();
+    const target = new Date();
+    target.setHours(23, 59, 59, 999);
+
+    const diff = target - now;
+    if (diff <= 0) {
+      countdownEl.textContent = "00:00:00";
+      return;
+    }
+
+    const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+    const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
+    const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+
+    countdownEl.textContent = `${hours}:${minutes}:${seconds}`;
+  }
+
+  setInterval(updateCountdown, 1000);
   updateProgress();
+  updateCountdown();
 });
