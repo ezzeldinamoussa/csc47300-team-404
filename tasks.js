@@ -23,14 +23,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // Create difficulty bars instead of text
   function renderDifficultyBars() {
     document.querySelectorAll(".task-difficulty").forEach(span => {
-      const difficulty = span.textContent.trim().toLowerCase();
+      // Use stored data-difficulty if text is gone
+      let difficulty = span.dataset.difficulty || span.textContent.trim().toLowerCase();
+      
+      // Save it as a data attribute for future re-renders
+      span.dataset.difficulty = difficulty;
+  
       const levels = { easy: 1, medium: 2, hard: 3 }[difficulty] || 0;
+  
+      // Clear existing content
+      span.textContent = "";
   
       // Create bars container
       const barsContainer = document.createElement("div");
       barsContainer.classList.add("difficulty-bars");
   
-      // Add 3 bars
+      // Add 3 bars, marking filled ones
       for (let i = 1; i <= 3; i++) {
         const bar = document.createElement("div");
         bar.classList.add("difficulty-bar");
@@ -38,8 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
         barsContainer.appendChild(bar);
       }
   
-      // Replace text with bars
-      span.textContent = "";
       span.appendChild(barsContainer);
     });
   }
