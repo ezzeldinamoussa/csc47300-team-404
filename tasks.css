@@ -24,7 +24,7 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 6px 18px rgba(2,6,23,0.04);
-  border: 2px solid #e0e0e0;
+  border: 2px solid #7c3aed;
 }
 
 .section-header {
@@ -100,7 +100,7 @@
   padding: 10px 12px;
   border-radius: 8px;
   background: #fafafa;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #7c3aed;
   margin-bottom: 8px;
   transition: background 0.2s ease, transform 0.12s ease;
   word-wrap: break-word;
@@ -131,7 +131,7 @@
   flex: 1;
   background: #fff;
   border-radius: 10px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #7c3aed;
   padding: 20px;
   box-shadow: 0 6px 18px rgba(2,6,23,0.08);
   display: none;
