@@ -1,26 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="stats.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="stats.css" />
+
+<!-- D3 v3 dependency -->
+<script src="https://d3js.org/d3.v3.min.js"></script>
+
+<!-- Cal-Heatmap classic build (v3.3.10 compatible with v3.1.6 docs) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+<script src="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+
+
   <title>Stats</title>
 </head>
 <body>
-
   <header class="page-header">
     <nav class="nav-left">
-        <a href="index.html" class="nav-button">Home</a>
-        <a href="tasks.html" class="nav-button">Tasks</a>
-        <a href="friends.html" class="nav-button">Friends</a>
+      <a href="index.html" class="nav-button">Home</a>
+      <a href="tasks.html" class="nav-button">Tasks</a>
+      <a href="friends.html" class="nav-button">Friends</a>
     </nav>
     <a href="index.html" class="logo">
-      <img src="images/purple-logo.png" alt="Streak Quest Logo">
+      <img src="images/purple-logo.png" alt="Streak Quest Logo" />
     </a>
     <nav class="nav-right">
-        <a href="stats.html" class="nav-button active">Stats</a>
-        <a href="index.html" class="nav-button">Logout</a>
+      <a href="stats.html" class="nav-button active">Stats</a>
+      <a href="index.html" class="nav-button">Logout</a>
     </nav>
   </header>
 
@@ -30,26 +38,33 @@
     <div class="stats-grid">
       <div class="stat-card">
         <h2>Current Streak</h2>
-        <p class="value">7 Days 🔥</p>
+        <p id="current-streak" class="value">Loading...</p>
       </div>
       <div class="stat-card">
         <h2>Total Days Completed</h2>
-        <p class="value">45</p>
+        <p id="days-completed" class="value">Loading...</p>
       </div>
       <div class="stat-card">
         <h2>Total Tasks Completed</h2>
-        <p class="value">120</p>
+        <p id="tasks-completed" class="value">Loading...</p>
       </div>
       <div class="stat-card">
         <h2>Total Tasks Missed</h2>
-        <p class="value">15</p>
+        <p id="tasks-missed" class="value">Loading...</p>
       </div>
       <div class="stat-card">
         <h2>Current Points</h2>
-        <p class="value">830 pts ⭐</p>
+        <p id="current-points" class="value">Loading...</p>
+      </div>
+
+      <!--  Calendar Heatmap Card -->
+      <div class="stat-card" id="calendar-card">
+        <h2>Activity Calendar</h2>
+        <div id="cal-heatmap" class="calendar-container"></div>
       </div>
     </div>
   </main>
-  
+
+  <script src="stats.js"></script>
 </body>
 </html>
