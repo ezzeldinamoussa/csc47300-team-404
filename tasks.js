@@ -20,6 +20,30 @@ document.addEventListener("DOMContentLoaded", () => {
     progressText.textContent = `${percent}% Complete`;
   }
 
+  // Create difficulty bars instead of text
+  function renderDifficultyBars() {
+    document.querySelectorAll(".task-difficulty").forEach(span => {
+      const difficulty = span.textContent.trim().toLowerCase();
+      const levels = { easy: 1, medium: 2, hard: 3 }[difficulty] || 0;
+  
+      // Create bars container
+      const barsContainer = document.createElement("div");
+      barsContainer.classList.add("difficulty-bars");
+  
+      // Add 3 bars
+      for (let i = 1; i <= 3; i++) {
+        const bar = document.createElement("div");
+        bar.classList.add("difficulty-bar");
+        if (i <= levels) bar.classList.add("filled");
+        barsContainer.appendChild(bar);
+      }
+  
+      // Replace text with bars
+      span.textContent = "";
+      span.appendChild(barsContainer);
+    });
+  }
+
   // Toggle Complete
   todayTasks.addEventListener("click", (e) => {
     if (e.target.classList.contains("complete-btn")) {
@@ -99,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tomorrowTasks.appendChild(task);
     }
 
+    renderDifficultyBars();
     addTaskForm.reset();
     sidebar.style.display = "none";
   });
@@ -125,4 +150,5 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateCountdown, 1000);
   updateProgress();
   updateCountdown();
+  renderDifficultyBars();
 });
