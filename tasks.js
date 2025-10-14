@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tasks = todayTasks.querySelectorAll(".task-item");
     const completed = todayTasks.querySelectorAll(".task-item[data-status='completed']");
     const percent = tasks.length ? Math.round((completed.length / tasks.length) * 100) : 0;
-    progressFill.style.width = `${percent}%`;
+    progressFill.style.width = isNaN(percent) ? "0%" : `${percent}%`;
     progressText.textContent = `${percent}% Complete`;
   }
 
