@@ -196,3 +196,22 @@
     width: 100%;
   }
 }
+
+/* Difficulty Indicator Bars */
+.difficulty-bars {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+  height: 12px;
+}
+
+.difficulty-bar {
+  width: 6px;
+  height: 100%;
+  border-radius: 2px;
+  background-color: #e5e7eb; /* default empty */
+}
+
+.difficulty-bar.filled {
+  background-color: #7c3aed; /* purple fill for filled levels */
+}
