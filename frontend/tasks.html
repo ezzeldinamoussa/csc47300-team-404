@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="tasks.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="tasks.css"/>
   <title>Tasks</title>
 </head>
 <body>
@@ -41,6 +41,7 @@
           <p class="progress-text">50% Complete</p>
 
           <ul id="today-tasks" class="task-list">
+            <!-- fallback static items (kept for offline/fallback) -->
             <li class="task-item" data-status="pending">
               <div class="task-info">
                 <span class="task-name">Finish project proposal</span>
@@ -70,6 +71,7 @@
           </div>
 
           <ul id="tomorrow-tasks" class="task-list">
+            <!-- fallback static items (kept for offline/fallback) -->
             <li class="task-item" data-status="pending">
               <div class="task-info">
                 <span class="task-name">Workout for 30 minutes</span>
@@ -116,6 +118,16 @@
       </aside>
     </div>
   </main>
+
+  <!-- Config: change these if your backend is on a different port or you want a different user -->
+  <script>
+    // Point this to your Express server. Default assumes express is at http://localhost:3000
+    const API_BASE = 'http://localhost:3000';
+
+    // Note: login.js stores JWT at localStorage.token.
+    // tasks.js requires that token to be present to identify user.
+    // (If you prefer cookie-based auth, we can adapt later.)
+  </script>
 
   <script src="tasks.js"></script>
 </body>
