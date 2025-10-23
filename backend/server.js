@@ -1,8 +1,11 @@
 // backend/server.js
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import connectDB from "./db.js";
+const express = require('express');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const connectDB = require('./db.js'); // Use require
+
+// Import routes
+const authRoutes = require('./routes/auth');
 
 // Load environment variables
 dotenv.config();
@@ -17,14 +20,19 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // parses JSON bodies
 
-// Routes (example placeholder)
-app.get("/", (req, res) => {
-  res.send("Backend API is running...");
+// --- Define Routes ---
+
+// Health check route
+app.get('/', (req, res) => {
+  res.send('Backend API is running...');
 });
 
-// Example: basic users endpoint (we’ll hook up your real model soon)
-app.get("/api/users", (req, res) => {
-  res.json({ message: "Users endpoint working!" });
+// Authentication routes
+app.use('/api/auth', authRoutes);
+
+// Example: basic users endpoint (placeholder)
+app.get('/api/users', (req, res) => {
+  res.json({ message: 'Users endpoint working!' });
 });
 
 // Start server
