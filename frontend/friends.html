@@ -1,32 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="friends.css" />
     <title>Friends</title>
-</head>
-<body>
-
+  </head>
+  <body>
     <header class="page-header">
-        <nav class="nav-left">
-            <a href="index.html" class="nav-button">Home</a>
-            <a href="tasks.html" class="nav-button">Tasks</a>
-            <a href="friends.html" class="nav-button active">Friends</a>
-        </nav>
-        <a href="index.html" class="logo">
-          <img src="images/purple-logo.png" alt="Streak Quest Logo">
-        </a>
-        <nav class="nav-right">
-            <a href="task-history.html" class="nav-button">History</a>
-            <a href="stats.html" class="nav-button">Stats</a>
-            <a href="index.html" class="nav-button">Logout</a>
-        </nav>
+      <nav class="nav-left">
+        <a href="index.html" class="nav-button">Home</a>
+        <a href="tasks.html" class="nav-button">Tasks</a>
+        <a href="friends.html" class="nav-button active">Friends</a>
+      </nav>
+      <a href="index.html" class="logo">
+        <img src="images/purple-logo.png" alt="Streak Quest Logo" />
+      </a>
+      <nav class="nav-right">
+        <a href="task-history.html" class="nav-button">History</a>
+        <a href="stats.html" class="nav-button">Stats</a>
+        <a href="index.html" class="nav-button">Logout</a>
+      </nav>
     </header>
 
     <main class="app-container">
-        <h1>Friends</h1>
-        </main>
-    
-</body>
+      <div class="leaderboard-container">
+        <div class="leaderboard">
+          <div class="leaderboard-header">
+            <h2 class="leaderboard-title">Leaderboard</h2>
+          </div>
+
+          <div class="leaderboard-title-row">
+            <div class="tabs">
+              <button class="tab active">Friends</button>
+              <button class="tab">Global</button>
+            </div>
+            <div class="filter-controls">
+              <select class="filter">
+                <option selected>This Week</option>
+                <option>This Month</option>
+                <option>This Year</option>
+                <option>All Time</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="leaderboard-body">
+            <div class="people-list">
+              <ol>
+                <li>
+                  <span class="name">penguin05</span
+                  ><span class="pts">525 pts</span>
+                </li>
+                <li>
+                  <span class="name">trixie4</span
+                  ><span class="pts">400 pts</span>
+                </li>
+                <li>
+                  <span class="name">denzil3290</span
+                  ><span class="pts">390 pts</span>
+                </li>
+                <li>
+                  <span class="name">amti89</span
+                  ><span class="pts">325 pts</span>
+                </li>
+                <li>
+                  <span class="name">felix67</span
+                  ><span class="pts">200 pts</span>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const tabs = document.querySelectorAll(".tabs .tab");
+        if (!tabs.length) return;
+
+        if (!document.querySelector(".tabs .tab.active"))
+          tabs[0].classList.add("active");
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            tabs.forEach((t) => t.classList.remove("active"));
+            tab.classList.add("active");
+          });
+        });
+      });
+    </script>
+  </body>
 </html>

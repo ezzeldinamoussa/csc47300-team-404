@@ -1,0 +1,170 @@
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  position: relative;
+  background-color: #fff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.logo {
+  height: 50px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.logo img {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+
+.nav-button {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 5px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.1s ease-in-out;
+  background-color: #7c3aed;
+  color: #ffffff;
+  border: none;
+}
+
+.nav-button:hover {
+  background-color: #6d28d9;
+}
+
+.nav-button:active {
+  background-color: #16a34a;
+  transform: translateY(1px);
+}
+
+.nav-button.active {
+  background-color: #16a34a;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  cursor: default;
+}
+
+.nav-button.active:hover {
+  background-color: #16a34a;
+}
+
+/* Friends Page */
+.leaderboard {
+  width: 500px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.leaderboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tabs .tab {
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+  color: #333;
+  font-size: 15px;
+}
+
+.tabs .tab.active {
+  background: #16a34a;
+  color: #fff;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.filter-controls .filter {
+  min-width: 140px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.leaderboard-title {
+  margin: 0;
+  font-size: 25px;
+  padding-top: 4px;
+}
+
+.leaderboard-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.people-list {
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  background: rgba(176, 175, 175, 0.078);
+  padding: 8px;
+  max-height: 300px;
+  overflow: auto;
+}
+
+.people-list ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.people-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.073);
+}
+
+.people-list li:last-child {
+  border-bottom: none;
+}
+
+.people-list .name {
+  font-weight: 600;
+}
+
+.people-list .pts {
+  color: #4d4c4c;
+  font-size: 14px;
+}
+
+.leaderboard-container {
+  margin-top: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
