@@ -95,7 +95,7 @@
 .task-item {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   flex-wrap: wrap;
   padding: 10px 12px;
   border-radius: 8px;
@@ -104,14 +104,19 @@
   margin-bottom: 8px;
   transition: background 0.2s ease, transform 0.12s ease;
   word-wrap: break-word;
+  gap: 8px;
 }
 
 .task-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex: 1;
-  min-width: 0;
-  margin-right: 8px;
-  word-wrap: break-word;
-  white-space: normal;
+}
+
+.task-name {
+  text-align: left;
+  flex: 1;
 }
 
 .task-item[data-status="completed"] {
@@ -200,9 +205,9 @@
 /* Difficulty Indicator Bars */
 .difficulty-bars {
   display: flex;
-  gap: 3px;
-  margin-top: 4px;
+  gap: 4px;
   height: 12px;
+  margin: 0;
 }
 
 .difficulty-bar {
@@ -214,6 +219,13 @@
 
 .difficulty-bar.filled {
   background-color: #7c3aed; /* purple fill for filled levels */
+}
+
+.task-difficulty {
+  font-weight: 500;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
 }
 
 /* ------------------ HISTORY PAGE STYLES ------------------ */
@@ -307,9 +319,4 @@
 
 .task-item-history[data-status="missed"] {
   border-left: 4px solid #ef4444;
-}
-
-.task-difficulty {
-  font-weight: 500;
-  color: #6b7280;
 }
