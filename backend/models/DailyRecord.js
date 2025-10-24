@@ -12,6 +12,11 @@ const taskSchema = new mongoose.Schema({
     type: String,
     trim: true,   // Optional short note or details
   },
+  difficulty: {
+    type: String,
+    enum: ['Easy', 'Medium', 'Hard'],
+    default: 'Medium',
+  },
   completed: {
     type: Boolean,
     default: false,
