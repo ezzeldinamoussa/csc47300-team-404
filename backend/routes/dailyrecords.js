@@ -56,7 +56,7 @@ router.post('/addTask', authMiddleware, async (req, res) => {
   }
 });
 
-// --- Get Tasks Only ---
+// --- Get Specific Tasks Only ---
 router.get('/getTasks', authMiddleware, async (req, res) => {
   try {
     const { date } = req.query;
@@ -69,6 +69,18 @@ router.get('/getTasks', authMiddleware, async (req, res) => {
     res.status(500).json({ msg: 'Server error' });
   }
 });
+
+// --- Get All Tasks ---
+router.get('/getAllTasks', authMiddleware, async(req,res) => {
+  try{
+  const records = await DailyRecord.find({user_id: req.user_id});
+  return res.send(records);
+  }
+  catch (err){
+    console.error('Error fetching all tasks: ', err);
+    res.status(500).json({msg: 'Server error'});
+  }
+})
 
 // --- Update Task Completed Status ---
 router.patch('/updateTask', authMiddleware, async (req, res) => {
