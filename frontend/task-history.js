@@ -1,34 +1,69 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const container = document.getElementById("history-container");
 
+  const token = localStorage.getItem("token");
+
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  if (!token) {
+    window.location.href = "/login.html";
+    return;
+  }
+
+  async function fetchAllTasks() {
+    const response = await fetch(
+      `http://localhost:5000/api/dailyrecords/getAllTasks`,
+      {
+        method: "GET",
+        headers,
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    return await response.json();
+  }
+  const tasks = await fetchAllTasks();
+  
   // Fake task data
   const historyData = {
     2025: {
       October: {
         "Monday - 10/13/2025": [
-          { name: "Finish proposal", difficulty: "Medium", status: "completed" },
-          { name: "Clean workspace", difficulty: "Easy", status: "missed" }
+          {
+            name: "Finish proposal",
+            difficulty: "Medium",
+            status: "completed",
+          },
+          { name: "Clean workspace", difficulty: "Easy", status: "missed" },
         ],
         "Sunday - 10/12/2025": [
           { name: "Read 20 pages", difficulty: "Easy", status: "completed" },
-          { name: "Workout", difficulty: "Hard", status: "missed" }
-        ]
+          { name: "Workout", difficulty: "Hard", status: "missed" },
+        ],
       },
       September: {
         "Friday - 9/26/2025": [
           { name: "Team meeting", difficulty: "Medium", status: "completed" },
-          { name: "Send report", difficulty: "Easy", status: "completed" }
-        ]
-      }
+          { name: "Send report", difficulty: "Easy", status: "completed" },
+        ],
+      },
     },
     2024: {
       November: {
         "Tuesday - 11/12/2024": [
-          { name: "Finish project notes", difficulty: "Medium", status: "completed" },
-          { name: "Exercise", difficulty: "Easy", status: "missed" }
-        ]
-      }
-    }
+          {
+            name: "Finish project notes",
+            difficulty: "Medium",
+            status: "completed",
+          },
+          { name: "Exercise", difficulty: "Easy", status: "missed" },
+        ],
+      },
+    },
   };
 
   function createAccordion(title, contentGenerator) {
@@ -62,15 +97,15 @@ document.addEventListener("DOMContentLoaded", () => {
     list.classList.add("task-list");
 
     tasks
-      .sort((a, b) => (a.status === "completed" ? -1 : 1)) // completed first
-      .forEach(task => {
+      .sort((a, b) => (a.completed === "true" ? 1 : -1)) // completed first
+      .forEach((task) => {
         const item = document.createElement("div");
         item.classList.add("task-item-history");
-        item.dataset.status = task.status;
+        item.dataset.status = task.completed ? 'completed' : 'missed';
 
         item.innerHTML = `
-          <span>${task.name}</span>
-          <span class="task-difficulty">${task.difficulty} — ${task.status}</span>
+          <span>${task.title}</span>
+          <span class="task-difficulty">${task.difficulty} — ${task.completed === "true" ? "completed" : "missed"}</span>
         `;
 
         list.appendChild(item);
@@ -87,7 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
       dayDiv.classList.add("task-day");
 
       const completion = Math.round(
-        (tasks.filter(t => t.status === "completed").length / tasks.length) * 100
+        (tasks.filter((t) => t.status === "completed").length / tasks.length) *
+          100
       );
 
       dayDiv.textContent = `${day} — ${completion}% complete`;
@@ -112,10 +148,31 @@ document.addEventListener("DOMContentLoaded", () => {
     return wrapper;
   }
 
+  const sortedTasks = {};
+  console.log("tasks", tasks);
+
+  tasks.forEach((value) => {
+    const date = new Date(value.date);
+    const year = date.getFullYear();
+    const monthName = date.toLocaleString('default', {month : 'long'});
+
+    if (!sortedTasks[year]) {
+      sortedTasks[year] = {};
+    } 
+    if (!sortedTasks[year][monthName]){
+      sortedTasks[year][monthName] = {};
+    }
+    if (!sortedTasks[year][monthName][value.date]){
+      sortedTasks[year][monthName][value.date] = value.tasks || [];
+    }
+  });
+
   // Build full accordion hierarchy
-  Object.entries(historyData)
+  Object.entries(sortedTasks)
     .sort(([a], [b]) => b - a) // newest year first
     .forEach(([year, months]) => {
-      container.appendChild(createAccordion(year, () => generateMonths(months)));
+      container.appendChild(
+        createAccordion(year, () => generateMonths(months))
+      );
     });
 });
