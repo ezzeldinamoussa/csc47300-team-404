@@ -1,10 +1,10 @@
-// backend/routes/auth.js
-const express = require('express');
+import express, { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
+import User from '../models/User'; 
+
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { v4: uuidv4 } = require('uuid');
-const User = require('../models/User'); // Correct path to your User model
 
 // --- User Registration (Signup) ---
 // @route   POST /api/auth/register
@@ -48,7 +48,7 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({ msg: 'User registered successfully! Please login.' });
 
-  } catch (err) {
+  } catch (err: any) {
     console.error(err.message);
     res.status(500).send('Server error');
   }
@@ -91,9 +91,11 @@ router.post('/login', async (req, res) => {
       }
     };
 
+    const secretJWT = process.env.JWT_SECRET as string
+
     jwt.sign(
       payload,
-      process.env.JWT_SECRET,
+      secretJWT,
       { expiresIn: '1h' }, // Token expires in 1 hour
       (err, token) => {
         if (err) throw err;
@@ -101,10 +103,10 @@ router.post('/login', async (req, res) => {
       }
     );
 
-  } catch (err) {
+  } catch (err: any) {
     console.error(err.message);
     res.status(500).send('Server error');
   }
 });
 
-module.exports = router;
+export default  router;
