@@ -10,6 +10,31 @@ font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
   background-color: #f5f5f5;
 }
 
+.bannerMessage {
+  position: absolute;
+  text-align: center;
+  top: 35px;
+  font-size: 20px;
+  box-shadow: 0 5px 5px rgba(129, 128, 128, 0.3);
+  background-color: rgba(238, 237, 237, 0.595);
+  width: 51.09%;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  font-weight: bold;
+}
+/* hidden helper */
+.hidden { display: none !important; }
+
+/* variants */
+.bannerMessage.success {
+  background: #83d1ada5;
+  color: #065f46;
+}
+.bannerMessage.error {
+  background: #c962699b;
+  color: #7f1d1d;
+}
+
 .login-container {
   display: flex;
   height: 100vh;
@@ -65,7 +90,8 @@ font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
   margin-bottom: 20px;
 }
 
-.login-input-group input {
+.login-input-group input,
+.login-form input[type="password"] {
   width: 100%;
   padding: 15px;
   border: 2px solid #e0e0e0;
@@ -75,7 +101,8 @@ font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
   outline: none;
 }
 
-.login-input-group input:focus {
+.login-input-group input:focus,
+.login-form input[type="password"]:focus  {
   border-color: #6017d5;
 }
 
