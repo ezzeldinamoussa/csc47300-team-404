@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           bannerText.textContent = msg;
           bannerMessage.classList.remove("hidden", "success", "error");
-          bannerEl.classList.add(status);
+          bannerMessage.classList.add(status);
 
           clearTimeout(bannerMessage._hideTimeout);
           bannerMessage._hideTimeout = setTimeout(

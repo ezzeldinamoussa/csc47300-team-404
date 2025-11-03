@@ -189,5 +189,9 @@ if (response.ok) {
 | **Login** | Try logging in with incorrect password | Verify password comparison using bcrypt | Error message: *“Invalid credentials.”* |
 | **Login** | Enter valid credentials for a registered user | Confirm successful authentication | JWT token returned; user redirected to `tasks.html` |
 | **Login** | Inspect localStorage after successful login | Verify token persistence | `token` key exists in localStorage |
-
+| **Tasks** | Try creating task without all fields filled out | Validate required inputs | Error message: *“Please fill out this field.” | 
+| **Tasks** | Allow creating tasks for today and tomorrow | Adding new task details will be shown on tasks card | Creating a task without errors stores it under today or tomorrow cards |
+| **Tasks** | Tasks created for tomorrow can't be changed by end of day | Backend stores tasks until date and time are EOD | Tasks can't be changed later than EOD |
+| **Tasks** | Tasks created for tomorrow can be viewed the next day | Backend fetches previous day's tasks made to show on today's card | Creating tasks for tomorrow can be viewed without altering the next day |
+| **Tasks** | Restrict task creation to today or tomorrow and task deletion to tomorrow and enforce server-side validation | User can only create tasks for today or tomorrow and delete tasks for tomorrow| Use of buttons in UI allows for deletion of today's tasks and insertion of today's and tomorrow's tasks without errors | 
 ---
