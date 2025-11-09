@@ -22,7 +22,7 @@
 ---
 
 
-## History Feature Testing Checklist
+# History Feature Testing Checklist
 
 | **Feature** | **Checklist Item** | **Goal** | **Expected Result** |
 |--------------|--------------------|-----------|----------------------|
