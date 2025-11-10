@@ -88,7 +88,7 @@ router.get('/getTasks', authMiddleware, async (req: AuthRequest, res: Response) 
     if (!date) return res.status(400).json({ msg: 'Date required' });
 
     const record = await DailyRecord.findOne({ user_id: req.user_id, date: date as string });
-    res.json(record?.tasks || []);
+    res.json({ tasks: record?.tasks || [] });
   } catch (err: any) {
     console.error('Error getting tasks:', err);
     res.status(500).json({ msg: 'Server error' });
