@@ -216,3 +216,19 @@ body {
     transform: translateY(1px);
     animation: none; 
 }
+
+@media (max-width: 768px) {
+  #signup-mascot {
+    width: 200px; 
+    bottom: 15px;
+    left: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  #signup-mascot {
+    width: 150px;  
+    bottom: 10px; 
+    left: 10px;
+  }
+}
