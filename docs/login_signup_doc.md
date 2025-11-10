@@ -173,21 +173,4 @@ if (response.ok) {
 
 ---
 
-## 6. Feature Testing Checklist
 
-| **Feature** | **Checklist Item** | **Goal** | **Expected Result** |
-|--------------|--------------------|-----------|----------------------|
-| **Signup** | Check that all input fields (`Username`, `Email`, `Password`, `Confirm Password`) are visible and labeled correctly | Ensure all fields are available to the user | All input fields are displayed with correct placeholders and labels |
-| **Signup** | Try submitting the form with one or more fields left empty | Test form validation for required inputs | Error message: *“Please enter all fields.”* |
-| **Signup** | Enter mismatched `Password` and `Confirm Password` | Verify password confirmation logic | Error message: *“Passwords do not match.”* |
-| **Signup** | Register with an already used username or email | Test backend duplicate account prevention | Error message: *“User with this email or username already exists.”* |
-| **Signup** | Enter valid details for a new user | Confirm successful user creation and redirection | Alert: *“User registered successfully! Please login.”* and redirect to `login.html` |
-| **Signup** | Check password hashing in the database | Ensure password security | `password_hash` stored as hashed string |
-| **Login** | Check that `Username or Email` and `Password` inputs are visible | Ensure clear access to login form | Fields are correctly labeled and visible |
-| **Login** | Try logging in with missing fields | Validate required inputs | Error message: *“Please provide credentials.”* |
-| **Login** | Try logging in with invalid username or email | Test backend user existence check | Error message: *“Invalid credentials.”* |
-| **Login** | Try logging in with incorrect password | Verify password comparison using bcrypt | Error message: *“Invalid credentials.”* |
-| **Login** | Enter valid credentials for a registered user | Confirm successful authentication | JWT token returned; user redirected to `tasks.html` |
-| **Login** | Inspect localStorage after successful login | Verify token persistence | `token` key exists in localStorage |
-
----

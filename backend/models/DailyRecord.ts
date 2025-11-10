@@ -1,5 +1,5 @@
 // backend/models/DailyRecord.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Define task schema
 const taskSchema = new mongoose.Schema({
@@ -60,4 +60,4 @@ const dailyRecordSchema = new mongoose.Schema({
 dailyRecordSchema.index({ user_id: 1, date: 1 }, { unique: true });
 
 const DailyRecord = mongoose.model('DailyRecord', dailyRecordSchema);
-module.exports = DailyRecord;
+export default DailyRecord;

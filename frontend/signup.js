@@ -29,13 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
           bannerText.textContent = msg;
           bannerMessage.classList.remove("hidden", "success", "error");
-          bannerEl.classList.add(status);
+          bannerMessage.classList.add(status);
 
-            clearTimeout(bannerMessage._hideTimeout);
-            bannerMessage._hideTimeout = setTimeout(
-              () => bannerMessage.classList.add("hidden"),
-              4000
-            );
+          clearTimeout(bannerMessage._hideTimeout);
+          bannerMessage._hideTimeout = setTimeout(
+            () => bannerMessage.classList.add("hidden"),
+            4000
+          );
         };
         const result = await response.json();
         if (response.ok) {
