@@ -20,12 +20,6 @@
 | **Tasks** | Tasks created for tomorrow can be viewed the next day | Backend fetches previous day's tasks made to show on today's card | Creating tasks for tomorrow can be viewed without altering the next day |
 | **Tasks** | Restrict task creation to today or tomorrow and task deletion to tomorrow and enforce server-side validation | User can only create tasks for today or tomorrow and delete tasks for tomorrow| Use of buttons in UI allows for deletion of today's tasks and insertion of today's and tomorrow's tasks without errors | 
 ---
-
-
-# History Feature Testing Checklist
-
-| **Feature** | **Checklist Item** | **Goal** | **Expected Result** |
-|--------------|--------------------|-----------|----------------------|
 | **Security** | Load `task-history.html` while logged out (no token) | Test auth redirect | Page should immediately redirect to `login.html`. |
 | **Data Fetch** | Load `task-history.html` while logged in | Test successful data fetch and render | Top-level accordions for each "Year" with data should appear. |
 | **UI** | Click on a "Year" accordion | Test year-to-month drilldown | Accordion opens, revealing "Month" accordions inside. |
