@@ -6,7 +6,6 @@ interface Task {
   title: string;
   difficulty?: "Easy" | "Medium" | "Hard" | string;
   completed?: boolean;
-  [k: string]: any;
 }
 
 interface DailyRecordResponse {
