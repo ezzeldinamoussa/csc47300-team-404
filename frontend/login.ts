@@ -1,0 +1,82 @@
+// frontend/login.ts
+// TypeScript version of login.js
+// Preserves full functionality: form handling, API call, banner message, and redirect
+
+interface LoginResponse {
+  token?: string;
+  msg?: string;
+}
+
+interface BannerMessageElement extends HTMLElement {
+  _hideTimeout?: number;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const loginForm = document.getElementById("login-form") as HTMLFormElement | null;
+
+  if (!loginForm) return;
+
+  loginForm.addEventListener("submit", async (e: SubmitEvent) => {
+    e.preventDefault(); // Stop normal form submission
+
+    // Collect form data
+    const formData = new FormData(loginForm);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      // Send login request to backend
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result: LoginResponse = await response.json();
+
+      // Function to display banner messages
+      const showBanner = (msg: string, status: "success" | "error" | "hidden" = "hidden"): void => {
+        const bannerMessage = document.getElementById("bannerMessage") as BannerMessageElement | null;
+        const bannerText = document.getElementById("bannerText") as HTMLElement | null;
+
+        if (!bannerMessage || !bannerText) return;
+
+        bannerText.textContent = msg;
+        bannerMessage.classList.remove("hidden", "success", "error");
+        bannerMessage.classList.add(status);
+
+        // Clear any existing timeout
+        if (bannerMessage._hideTimeout) {
+          clearTimeout(bannerMessage._hideTimeout);
+        }
+
+        // Hide banner after 4 seconds
+        bannerMessage._hideTimeout = window.setTimeout(() => {
+          bannerMessage.classList.add("hidden");
+        }, 4000);
+      };
+
+      if (response.ok && result.token) {
+        // Login successful
+        localStorage.setItem("token", result.token);
+        window.location.href = "tasks.html";
+      } else {
+        // Login failed — show message from backend
+        showBanner(result.msg ?? "Login failed. Please try again.", "error");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      const bannerMessage = document.getElementById("bannerMessage") as BannerMessageElement | null;
+      if (bannerMessage) {
+        const bannerText = document.getElementById("bannerText") as HTMLElement | null;
+        if (bannerText) bannerText.textContent = "An error occurred. Please try again.";
+        bannerMessage.classList.remove("hidden", "success");
+        bannerMessage.classList.add("error");
+        bannerMessage._hideTimeout = window.setTimeout(() => {
+          bannerMessage.classList.add("hidden");
+        }, 4000);
+      }
+    }
+  });
+});
