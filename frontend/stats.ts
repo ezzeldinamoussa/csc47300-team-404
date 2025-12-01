@@ -132,8 +132,12 @@ async function loadCalendarHeatmap(): Promise<void> {
     const calendarData = await getCalendarData();
 
     const now = new Date();
-    // start on first day of month 11 months ago (match original)
-    const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 11, 1));
+    // Use local time (not UTC) to match user's timezone (EST)
+    // Start 11 months ago to show 12 months total
+    const start = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+    // End at the first day of next month (exclusive) to include current month fully
+    // This ensures December 2025 is shown when we're in December 2025
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
     const cal = new globalAny.CalHeatMap() as CalHeatMap;
     cal.init({
@@ -141,10 +145,11 @@ async function loadCalendarHeatmap(): Promise<void> {
       domain: "month",
       subDomain: "day",
       cellSize: 13,
-      range: 12,
+      // Remove range when using explicit start/end dates
       domainGutter: 8,
       displayLegend: true,
       start: start,
+      end: end, // Explicitly set end date to include current month (first day of next month)
       data: calendarData,
       tooltip: true,
       legend: [1, 2, 3, 4, 5],

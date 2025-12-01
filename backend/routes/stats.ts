@@ -56,7 +56,10 @@ function convertToCalendarData(dailySummary: Map<string, number>): Record<string
       // Convert YYYY-MM-DD to Unix timestamp (seconds, not milliseconds)
       // Cal-Heatmap expects Unix timestamps in seconds
       try {
-        const date = new Date(dateStr + 'T00:00:00Z');
+        // Parse date as local date to avoid timezone offset issues
+        // This ensures "2024-11-30" shows as Nov 30, not Nov 29
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const date = new Date(year, month - 1, day); // month is 0-indexed in Date constructor
         const unixTimestamp = Math.floor(date.getTime() / 1000).toString();
         calendarData[unixTimestamp] = count;
       } catch (err) {
