@@ -1,10 +1,15 @@
-// backend/db.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-async function connectDB() {
+/**
+ * Connects to MongoDB using the connection string from environment variables or default.
+ * Exits the process if connection fails.
+ * 
+ * Note: dotenv.config() is called in server.ts before this function is invoked.
+ */
+async function connectDB(): Promise<void> {
   try {
-    // Connect using the connection string from your .env file or default
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/TasksDB');
+    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost/TasksDB';
+    await mongoose.connect(mongoUri);
     console.log('MongoDB connected!');
   } catch (err) {
     console.error('MongoDB connection error:', err);

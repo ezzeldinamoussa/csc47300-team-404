@@ -1,5 +1,11 @@
 # Environment variables
 .env
 
+# Setup documentation (local only)
+SETUP.md
+
+# Build outputs (compiled TypeScript)
+dist/
+
 # Node modules
 node_modules/
