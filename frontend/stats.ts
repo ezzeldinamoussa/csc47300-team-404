@@ -1,6 +1,5 @@
 // frontend/stats.ts
-// Typed conversion of frontend/stats.js
-// Preserves functionality: populate stats and render Cal-Heatmap calendar.
+// Fetches real user statistics from backend API and renders Cal-Heatmap calendar.
 
 // Cal-Heatmap from CDN — minimal typing so TS won't complain.
 declare class CalHeatMap {
@@ -9,72 +8,111 @@ declare class CalHeatMap {
 
 type CalendarData = Record<string, number>;
 
-// --- Dummy data functions (same values as original JS) ---
-function getUsername(): string {
-  return "User123";
+// API response interface
+interface StatsResponse {
+  username: string;
+  total_tasks_completed: number;
+  total_tasks_started: number;
+  tasks_missed: number;
+  total_points: number;
+  calendar_heatmap_data: CalendarData;
 }
 
-function getTotalStatsCompleted(): number {
-  return 120;
-}
+// Import API configuration
+import { API_BASE } from './config.js';
 
-function getTotalStatsStarted(): number {
-  return 150;
-}
+// --- Fetch user stats from API ---
+async function fetchUserStats(): Promise<StatsResponse> {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No authentication token found");
+  }
 
-function getCurrentStreak(): string {
-  return "7 Days 🔥";
-}
+  const response = await fetch(`${API_BASE}/api/stats`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  });
 
-function getHighestStreak(): string {
-  return "15 Days 🔥";
-}
+  if (!response.ok) {
+    if (response.status === 401) {
+      // Unauthorized - redirect to login
+      window.location.href = "login.html";
+      throw new Error("Unauthorized - redirecting to login");
+    }
+    throw new Error(`Failed to fetch stats: ${response.status}`);
+  }
 
-function getTotalDaysCompleted(): number {
-  return 45;
-}
-
-function getTotalTasksMissed(): number {
-  return 15;
-}
-
-function getCurrentPoints(): string {
-  return "830 pts ⭐";
+  return await response.json();
 }
 
 // --- Populate DOM with stats (safe null checks) ---
-function loadStats(): void {
-  const usernameEl = document.getElementById("username");
-  const totalCompletedEl = document.getElementById("total-stats-completed");
-  const totalStartedEl = document.getElementById("total-stats-started");
-  const currentStreakEl = document.getElementById("current-streak");
-  const highestStreakEl = document.getElementById("highest-streak");
-  const daysCompletedEl = document.getElementById("days-completed");
-  const tasksMissedEl = document.getElementById("tasks-missed");
-  const currentPointsEl = document.getElementById("current-points");
+async function loadStats(): Promise<void> {
+  try {
+    const stats = await fetchUserStats();
 
-  if (usernameEl) usernameEl.textContent = getUsername();
-  if (totalCompletedEl) totalCompletedEl.textContent = String(getTotalStatsCompleted());
-  if (totalStartedEl) totalStartedEl.textContent = String(getTotalStatsStarted());
-  if (currentStreakEl) currentStreakEl.textContent = getCurrentStreak();
-  if (highestStreakEl) highestStreakEl.textContent = getHighestStreak();
-  if (daysCompletedEl) daysCompletedEl.textContent = String(getTotalDaysCompleted());
-  if (tasksMissedEl) tasksMissedEl.textContent = String(getTotalTasksMissed());
-  if (currentPointsEl) currentPointsEl.textContent = getCurrentPoints();
+    const usernameEl = document.getElementById("username");
+    const totalCompletedEl = document.getElementById("total-stats-completed");
+    const totalStartedEl = document.getElementById("total-stats-started");
+    const currentStreakEl = document.getElementById("current-streak");
+    const highestStreakEl = document.getElementById("highest-streak");
+    const daysCompletedEl = document.getElementById("days-completed");
+    const tasksMissedEl = document.getElementById("tasks-missed");
+    const currentPointsEl = document.getElementById("current-points");
+
+    if (usernameEl) usernameEl.textContent = stats.username;
+    if (totalCompletedEl) totalCompletedEl.textContent = String(stats.total_tasks_completed);
+    if (totalStartedEl) totalStartedEl.textContent = String(stats.total_tasks_started);
+    
+    // Streak fields - not available yet, show placeholder
+    if (currentStreakEl) currentStreakEl.textContent = "0 Days 🔥";
+    if (highestStreakEl) highestStreakEl.textContent = "0 Days 🔥";
+    
+    // Days completed - count dates with tasks in calendar data
+    const daysCompleted = Object.keys(stats.calendar_heatmap_data).length;
+    if (daysCompletedEl) daysCompletedEl.textContent = String(daysCompleted);
+    
+    if (tasksMissedEl) tasksMissedEl.textContent = String(stats.tasks_missed);
+    if (currentPointsEl) currentPointsEl.textContent = `${stats.total_points} pts ⭐`;
+  } catch (error) {
+    console.error("Error loading stats:", error);
+    // Show error message to user
+    const usernameEl = document.getElementById("username");
+    if (usernameEl) usernameEl.textContent = "Error loading stats";
+    
+    // Set all stats to error state
+    const statElements = [
+      "total-stats-completed",
+      "total-stats-started",
+      "current-streak",
+      "highest-streak",
+      "days-completed",
+      "tasks-missed",
+      "current-points"
+    ];
+    
+    statElements.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = "Error";
+    });
+  }
 }
 
-// --- Dummy calendar data (same keys/values as original) ---
-function getCalendarData(): CalendarData {
-  return {
-    "1741219200": 3, "1741305600": 2, "1741392000": 4, "1741478400": 1,
-    "1741564800": 5, "1741651200": 2, "1741737600": 3, "1741824000": 4,
-    "1741910400": 1, "1741996800": 5, "1742083200": 2, "1742169600": 3,
-    "1742256000": 4, "1742342400": 1, "1742428800": 5
-  };
+// --- Fetch calendar data from API ---
+async function getCalendarData(): Promise<CalendarData> {
+  try {
+    const stats = await fetchUserStats();
+    return stats.calendar_heatmap_data || {};
+  } catch (error) {
+    console.error("Error fetching calendar data:", error);
+    return {};
+  }
 }
 
 // --- Initialize Cal-Heatmap calendar (safe guard for global) ---
-function loadCalendarHeatmap(): void {
+async function loadCalendarHeatmap(): Promise<void> {
   // Check DOM target exists
   const mountEl = document.getElementById("cal-heatmap");
   if (!mountEl) {
@@ -89,36 +127,51 @@ function loadCalendarHeatmap(): void {
     return;
   }
 
-  const now = new Date();
-  // start on first day of month 11 months ago (match original)
-  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 11, 1));
+  try {
+    // Fetch calendar data from API
+    const calendarData = await getCalendarData();
 
-  const cal = new globalAny.CalHeatMap() as CalHeatMap;
-  cal.init({
-    itemSelector: "#cal-heatmap",
-    domain: "month",
-    subDomain: "day",
-    cellSize: 13,
-    range: 12,
-    domainGutter: 8,
-    displayLegend: true,
-    start: start,
-    data: getCalendarData(),
-    tooltip: true,
-    legend: [1, 2, 3, 4, 5],
-    legendColors: {
-      min: "#ede9fe",
-      max: "#7c3aed",
-      empty: "#f3f4f6",
-      colors: ["#ede9fe", "#c4b5fd", "#a78bfa", "#7c3aed"]
-    },
-    label: { position: "top" },
-    domainLabelFormat: "%b '%y"
-  });
+    const now = new Date();
+    // start on first day of month 11 months ago (match original)
+    const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 11, 1));
+
+    const cal = new globalAny.CalHeatMap() as CalHeatMap;
+    cal.init({
+      itemSelector: "#cal-heatmap",
+      domain: "month",
+      subDomain: "day",
+      cellSize: 13,
+      range: 12,
+      domainGutter: 8,
+      displayLegend: true,
+      start: start,
+      data: calendarData,
+      tooltip: true,
+      legend: [1, 2, 3, 4, 5],
+      legendColors: {
+        min: "#ede9fe",
+        max: "#7c3aed",
+        empty: "#f3f4f6",
+        colors: ["#ede9fe", "#c4b5fd", "#a78bfa", "#7c3aed"]
+      },
+      label: { position: "top" },
+      domainLabelFormat: "%b '%y"
+    });
+  } catch (error) {
+    console.error("Error loading calendar heatmap:", error);
+  }
 }
 
-// --- Init on DOM ready ---
+// --- Check authentication and init on DOM ready ---
 document.addEventListener("DOMContentLoaded", () => {
+  // Check if user is authenticated
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Load stats and calendar
   loadStats();
   loadCalendarHeatmap();
 });

@@ -1,5 +1,5 @@
-/* global API_BASE defined in tasks.html inline script */
-declare const API_BASE: string;
+// Import API configuration
+import { API_BASE } from './config.js';
 
 interface Task {
   _id?: string;

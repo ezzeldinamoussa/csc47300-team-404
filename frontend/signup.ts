@@ -2,6 +2,8 @@
 // TypeScript version of signup.js
 // Handles user registration, banner feedback, and redirects to login on success
 
+import { API_BASE } from './config.js';
+
 interface RegisterResponse {
   msg?: string;
 }
@@ -32,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       // Send signup request to backend
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

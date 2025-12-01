@@ -1,3 +1,5 @@
+import { API_BASE } from './config.js';
+
 interface Task {
   _id?: string;
   title: string;
@@ -31,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Fetch all daily records for the logged-in user
   async function fetchAllTasks(): Promise<DailyRecord[]> {
-    const response = await fetch(`http://localhost:5000/api/dailyrecords/getAllTasks`, {
+    const response = await fetch(`${API_BASE}/api/dailyrecords/getAllTasks`, {
       method: "GET",
       headers,
     });

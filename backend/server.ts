@@ -4,7 +4,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './db'; 
 import authRoutes from './routes/auth'; 
-import dailyRecordsRoutes from './routes/dailyrecords'; 
+import dailyRecordsRoutes from './routes/dailyrecords';
+import statsRoutes from './routes/stats'; 
 
 
 
@@ -38,6 +39,9 @@ app.get('/api/users', (req: Request, res: Response): void => {
 
 // Daily records routes 
 app.use('/api/dailyrecords', dailyRecordsRoutes);
+
+// Stats routes
+app.use('/api/stats', statsRoutes);
 
 
 // Start server
