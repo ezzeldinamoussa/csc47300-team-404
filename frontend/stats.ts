@@ -15,6 +15,8 @@ interface StatsResponse {
   total_tasks_started: number;
   tasks_missed: number;
   total_points: number;
+  current_streak: number;
+  highest_streak: number;
   calendar_heatmap_data: CalendarData;
 }
 
@@ -66,9 +68,13 @@ async function loadStats(): Promise<void> {
     if (totalCompletedEl) totalCompletedEl.textContent = String(stats.total_tasks_completed);
     if (totalStartedEl) totalStartedEl.textContent = String(stats.total_tasks_started);
     
-    // Streak fields - not available yet, show placeholder
-    if (currentStreakEl) currentStreakEl.textContent = "0 Days 🔥";
-    if (highestStreakEl) highestStreakEl.textContent = "0 Days 🔥";
+    // Streak fields - display from API
+    if (currentStreakEl) {
+      currentStreakEl.textContent = `${stats.current_streak} Days 🔥`;
+    }
+    if (highestStreakEl) {
+      highestStreakEl.textContent = `${stats.highest_streak} Days 🔥`;
+    }
     
     // Days completed - count dates with tasks in calendar data
     const daysCompleted = Object.keys(stats.calendar_heatmap_data).length;

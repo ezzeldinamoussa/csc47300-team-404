@@ -60,6 +60,10 @@ const userSchema = new mongoose.Schema({
     of: Number,
     default: {},
   },
+  last_rollover_date: {
+    type: String,
+    default: null,
+  },
   badges: [
     {
       name: String,

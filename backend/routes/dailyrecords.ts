@@ -2,6 +2,7 @@ import express, { Router, Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import DailyRecord from '../models/DailyRecord'; // Assuming this is your Mongoose model
 import User from '../models/User';
+import { processDailyRollover } from '../utils/dailyRollover';
 
 const router: Router = express.Router();
 
@@ -61,6 +62,12 @@ function calculatePoints(difficulty: string): number {
 // --- Get Daily Record ---
 router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
+    // Process daily rollover on first API call of the day
+    // This updates streaks based on yesterday's completion
+    if (req.user_id) {
+      await processDailyRollover(req.user_id);
+    }
+
     const { date } = req.query;
     if (!date) return res.status(400).json({ msg: 'Date required' });
 

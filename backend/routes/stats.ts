@@ -1,6 +1,7 @@
 import express, { Router, Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from '../models/User';
+import { processDailyRollover } from '../utils/dailyRollover';
 
 const router: Router = express.Router();
 
@@ -77,6 +78,12 @@ function convertToCalendarData(dailySummary: Map<string, number>): Record<string
 // @access  Private (requires authentication)
 router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
+    // Process daily rollover on first API call of the day
+    // This updates streaks based on yesterday's completion
+    if (req.user_id) {
+      await processDailyRollover(req.user_id);
+    }
+
     // user_id is already validated by authMiddleware
     if (!req.user_id) {
       return res.status(401).json({ msg: 'User ID missing from token' });
@@ -103,6 +110,8 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
       total_tasks_started: user.total_tasks_created,
       tasks_missed: tasksMissed,
       total_points: user.total_points,
+      current_streak: user.current_streak || 0,
+      highest_streak: user.highest_streak || 0,
       calendar_heatmap_data: calendarData
     });
   } catch (err: any) {
