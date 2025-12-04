@@ -10,7 +10,7 @@ const router = express.Router();
 // @route   POST /api/auth/register
 // @desc    Register a new user
 // @access  Public
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: Request, res: Response) => {
   const { username, email, password, "confirm-password": confirmPassword } = req.body;
 
   // 1. Basic Validation
@@ -36,7 +36,7 @@ router.post('/register', async (req, res) => {
       email,
       password_hash: password, // Will be hashed next
       join_date: new Date().toISOString(),
-      // Other fields will use defaults from the schema
+      // isAdmin, isBanned, etc. will use defaults (false) from schema
     });
 
     // 4. Hash the password
@@ -58,7 +58,7 @@ router.post('/register', async (req, res) => {
 // @route   POST /api/auth/login
 // @desc    Authenticate user and get token
 // @access  Public
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: Request, res: Response) => {
   const { username, password } = req.body; // HTML form uses 'username' for both
 
   // 1. Basic Validation
@@ -99,7 +99,17 @@ router.post('/login', async (req, res) => {
       { expiresIn: '1h' }, // Token expires in 1 hour
       (err, token) => {
         if (err) throw err;
-        res.json({ token }); // Send token back to client
+        // We now send the User object (including isAdmin) along with the token
+        res.json({ 
+            token,
+            user: {
+                id: user.user_id,
+                username: user.username,
+                email: user.email,
+                // If username is "admin", they are automatically an Admin.
+                isAdmin: user.username === "admin" || user.isAdmin === true
+            }
+        }); 
       }
     );
 

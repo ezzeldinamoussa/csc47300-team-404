@@ -1,12 +1,10 @@
-
 import express, { Request, Response } from 'express';  
 import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './db'; 
 import authRoutes from './routes/auth'; 
 import dailyRecordsRoutes from './routes/dailyrecords'; 
-
-
+import userRoutes from './routes/userRoutes'; // <--- NEW IMPORT
 
 // Load environment variables
 dotenv.config();
@@ -31,16 +29,13 @@ app.get('/', (req: Request, res: Response): void => {
 // Authentication routes
 app.use('/api/auth', authRoutes);
 
-// Example: basic users endpoint (placeholder)
-app.get('/api/users', (req: Request, res: Response): void => {
-  res.json({ message: 'Users endpoint working!' });
-});
-
 // Daily records routes 
 app.use('/api/dailyrecords', dailyRecordsRoutes);
 
+//Admin routes
+// This connects the /api/users URL to userRoutes.ts file
+app.use('/api/users', userRoutes); 
 
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-

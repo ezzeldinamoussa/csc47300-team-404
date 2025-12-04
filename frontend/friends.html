@@ -11,7 +11,7 @@
       <nav class="nav-left">
         <a href="index.html" class="nav-button">Home</a>
         <a href="tasks.html" class="nav-button">Tasks</a>
-        <a href="friends.html" class="nav-button active">Friends</a>
+        <a href="friends.html" class="nav-button active" id="nav-friends-btn">Friends</a>
       </nav>
       <a href="index.html" class="logo">
         <img src="images/purple-logo.png" alt="Streak Quest Logo" />
@@ -49,24 +49,19 @@
             <div class="people-list">
               <ol>
                 <li>
-                  <span class="name">penguin05</span
-                  ><span class="pts">525 pts</span>
+                  <span class="name">penguin05</span><span class="pts">525 pts</span>
                 </li>
                 <li>
-                  <span class="name">trixie4</span
-                  ><span class="pts">400 pts</span>
+                  <span class="name">trixie4</span><span class="pts">400 pts</span>
                 </li>
                 <li>
-                  <span class="name">denzil3290</span
-                  ><span class="pts">390 pts</span>
+                  <span class="name">denzil3290</span><span class="pts">390 pts</span>
                 </li>
                 <li>
-                  <span class="name">amti89</span
-                  ><span class="pts">325 pts</span>
+                  <span class="name">amti89</span><span class="pts">325 pts</span>
                 </li>
                 <li>
-                  <span class="name">felix67</span
-                  ><span class="pts">200 pts</span>
+                  <span class="name">felix67</span><span class="pts">200 pts</span>
                 </li>
               </ol>
             </div>
@@ -76,6 +71,7 @@
         </div>
       </div>
     </main>
+    
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const tabs = document.querySelectorAll(".tabs .tab");
@@ -92,5 +88,7 @@
         });
       });
     </script>
+
+    <script src="../dist/frontend/nav.js"></script>
   </body>
 </html>

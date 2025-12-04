@@ -5,6 +5,12 @@
 interface LoginResponse {
   token?: string;
   msg?: string;
+  user?: {
+    id: string;
+    username: string;
+    email: string;
+    isAdmin: boolean; 
+  };
 }
 
 interface BannerMessageElement extends HTMLElement {
@@ -60,7 +66,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok && result.token) {
         // Login successful
         localStorage.setItem("token", result.token);
-        window.location.href = "tasks.html";
+
+        //Saving admin status
+        if (result.user && result.user.isAdmin) {
+            localStorage.setItem("isAdmin", "true");
+        } else {
+            localStorage.setItem("isAdmin", "false");
+        }
+
+        // Redirect to main page
+        window.location.href = "tasks.html"; 
       } else {
         // Login failed — show message from backend
         showBanner(result.msg ?? "Login failed. Please try again.", "error");
