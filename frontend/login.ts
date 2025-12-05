@@ -2,6 +2,8 @@
 // TypeScript version of login.js
 // Preserves full functionality: form handling, API call, banner message, and redirect
 
+import { API_BASE } from './config.js';
+
 interface LoginResponse {
   token?: string;
   msg?: string;
@@ -31,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       // Send login request to backend
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

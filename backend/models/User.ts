@@ -71,6 +71,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  total_tasks_created: {
+    type: Number,
+    default: 0,
+  },
   average_tasks_per_day: {
     type: Number,
     default: 0,
@@ -79,6 +83,10 @@ const userSchema = new mongoose.Schema({
     type: Map,
     of: Number,
     default: {},
+  },
+  last_rollover_date: {
+    type: String,
+    default: null,
   },
   badges: [
     {

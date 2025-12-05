@@ -3,6 +3,10 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './db'; 
 import authRoutes from './routes/auth'; 
+import dailyRecordsRoutes from './routes/dailyrecords';
+import statsRoutes from './routes/stats'; 
+
+
 import dailyRecordsRoutes from './routes/dailyrecords'; 
 import userRoutes from './routes/userRoutes'; // <--- NEW IMPORT
 
@@ -31,6 +35,9 @@ app.use('/api/auth', authRoutes);
 
 // Daily records routes 
 app.use('/api/dailyrecords', dailyRecordsRoutes);
+
+// Stats routes
+app.use('/api/stats', statsRoutes);
 
 //Admin routes
 // This connects the /api/users URL to userRoutes.ts file
