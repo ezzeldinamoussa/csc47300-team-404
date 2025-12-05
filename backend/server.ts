@@ -5,10 +5,7 @@ import connectDB from './db';
 import authRoutes from './routes/auth'; 
 import dailyRecordsRoutes from './routes/dailyrecords';
 import statsRoutes from './routes/stats'; 
-
-
-import dailyRecordsRoutes from './routes/dailyrecords'; 
-import userRoutes from './routes/userRoutes'; // <--- NEW IMPORT
+import userRoutes from './routes/userRoutes';
 
 // Load environment variables
 dotenv.config();

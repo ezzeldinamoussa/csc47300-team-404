@@ -13,8 +13,10 @@ export interface IUser extends Document {
   current_streak: number;
   highest_streak: number;
   total_tasks_completed: number;
+  total_tasks_created: number;
   average_tasks_per_day: number;
   daily_completion_summary: Map<string, number>;
+  last_rollover_date: string | null;
   badges: { name: string; earned_on: string }[];
   
   //Admin Fields
