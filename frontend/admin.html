@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="friends.css"> 
+    
+    <style>
+        .admin-panel { 
+            width: 90%; 
+            max-width: 1100px; 
+            margin: 50px auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.15); 
+            border: 2px solid #7c3aed; 
+        }
+
+        .admin-panel h2 {
+            color: #5b21b6;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0; 
+            border: 2px solid #7c3aed; 
+            border-radius: 8px; 
+            overflow: hidden;
+            font-family: inherit;
+        }
+
+        th { 
+            background-color: #8b5cf6; 
+            color: white; 
+            padding: 16px; 
+            text-align: left; 
+            font-weight: 600;
+            border-bottom: 2px solid #7c3aed;
+            border-right: 1px solid #7c3aed; 
+        }
+        
+        th:last-child { border-right: none; }
+
+        td { 
+            padding: 14px 16px; 
+            border-bottom: 1px solid #e9d5ff; 
+            border-right: 1px solid #c4b5fd; 
+            color: #333;
+            background-color: white; 
+            vertical-align: middle;
+        }
+
+        td:last-child { border-right: none; } 
+        tr:last-child td { border-bottom: none; }
+
+        tr:hover td { background-color: #f3e8ff; }
+
+        /* ACTION BUTTONS */
+        .btn-action {
+            font-weight: 600;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+            color: white;
+            transition: transform 0.1s;
+        }
+        .btn-action:hover { transform: scale(1.05); }
+
+        .btn-delete {
+            background-color: transparent;
+            color: #dc2626; 
+            border: none;
+            font-weight: 900;
+            font-size: 1.4rem;
+            padding: 4px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover {
+            background-color: #fee2e2;
+            transform: scale(1.2);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); 
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 2px solid #7c3aed;
+            animation: popIn 0.3s ease;
+        }
+
+        .modal-title {
+            color: #5b21b6;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .modal-text {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-confirm {
+            background-color: #7c3aed;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-cancel {
+            background-color: #e5e7eb;
+            color: #374151;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-confirm:hover { background-color: #6d28d9; }
+        .btn-cancel:hover { background-color: #d1d5db; }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <nav class="nav-left">
+            <a href="index.html" class="nav-button">Home</a>
+            <a href="tasks.html" class="nav-button">Tasks</a>
+            <a href="friends.html" class="nav-button active" id="nav-friends-btn">Friends</a>
+        </nav>
+        
+        <a href="index.html" class="logo">
+            <img src="images/purple-logo.png" alt="Streak Quest Logo">
+        </a>
+        
+        <nav class="nav-right">
+            <a href="index.html" class="nav-button">Logout</a>
+        </nav>
+    </div>
+
+    <div class="admin-panel">
+        <h2>User Management</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Joined</th>
+                    <th>Points</th>
+                    <th>Warnings</th>
+                    <th>Actions</th>
+                    <th style="text-align: center;">Delete User?</th>
+                </tr>
+            </thead>
+            <tbody id="user-list">
+                <tr><td colspan="7" style="text-align:center; color:#666;">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="confirmation-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 id="modal-title" class="modal-title">Confirm Action</h3>
+            <p id="modal-text" class="modal-text">Are you sure you want to do this?</p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button id="btn-confirm-action" class="btn-confirm" onclick="executeAction()">Yes, Do it</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../dist/frontend/admin.js"></script>
+    <script src="../dist/frontend/nav.js"></script>
+</body>
+</html>
