@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Authorization": `Bearer ${token}`
   });
 
+  /*
   function parseJwt(tok: string | null): any | null {
     if (!tok) return null;
     try {
@@ -53,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   const userId = parseJwt(token)?.user?.id;
+  */
 
   function isoDateToday(offset = 0): string {
     const d = new Date();

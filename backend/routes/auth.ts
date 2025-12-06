@@ -83,6 +83,13 @@ router.post('/login', async (req: Request, res: Response) => {
       return res.status(400).json({ msg: 'Invalid credentials.' });
     }
 
+    // 🛑 START: BAN CHECK IMPLEMENTATION 🛑
+    if (user.isBanned) {
+        // Use a generic error message (403 Forbidden is a good status code)
+        return res.status(403).json({ msg: 'Access denied.' });
+    }
+    // 🛑 END: BAN CHECK IMPLEMENTATION 🛑
+
     // 4. Create and sign JWT
     const payload = {
       user: {

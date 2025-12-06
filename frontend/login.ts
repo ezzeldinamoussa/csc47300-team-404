@@ -1,6 +1,6 @@
 // frontend/login.ts
 // TypeScript version of login.js
-// Preserves full functionality: form handling, API call, banner message, and redirect
+// Preserves full functionality: form handling, API call, banner message, and conditional redirect
 
 import { API_BASE } from './config.js';
 
@@ -68,16 +68,18 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok && result.token) {
         // Login successful
         localStorage.setItem("token", result.token);
+        let redirectUrl = "tasks.html"; // Default for normal users
 
-        //Saving admin status
+        // Saving admin status and checking for redirect
         if (result.user && result.user.isAdmin) {
             localStorage.setItem("isAdmin", "true");
+            redirectUrl = "admin.html"; // Redirect admins here
         } else {
             localStorage.setItem("isAdmin", "false");
         }
 
-        // Redirect to main page
-        window.location.href = "tasks.html"; 
+        // Redirect to the determined page
+        window.location.href = redirectUrl; 
       } else {
         // Login failed — show message from backend
         showBanner(result.msg ?? "Login failed. Please try again.", "error");

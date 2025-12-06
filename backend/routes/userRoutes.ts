@@ -1,6 +1,7 @@
 // backend/routes/userRoutes.ts
 import express from 'express';
 import User from '../models/User';
+import DailyRecord from '../models/DailyRecord';
 
 const router = express.Router();
 
@@ -52,10 +53,24 @@ router.post('/:id/warn', async (req, res) => {
 // 4. Delete User 
 router.delete('/:id', async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
+        // 1. Find the user to get their user_id before deletion
+        const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ msg: 'User not found' });
-        res.json({ msg: 'User deleted' });
+
+        const userIdToDelete = user.user_id; // Get the user_id (the foreign key)
+
+        // 2. Delete the user from the User collection
+        await User.findByIdAndDelete(req.params.id);
+        
+        // 🛑 3. DELETE ASSOCIATED DAILY RECORDS 🛑
+        // Use deleteMany to remove all records linked to this user_id
+        const deleteResult = await DailyRecord.deleteMany({ user_id: userIdToDelete });
+        
+        console.log(`Deleted ${deleteResult.deletedCount} daily records for user ${userIdToDelete}.`);
+
+        res.json({ msg: 'User and all associated data deleted successfully' });
     } catch (err) {
+        console.error(err);
         res.status(500).send('Server Error');
     }
 });
