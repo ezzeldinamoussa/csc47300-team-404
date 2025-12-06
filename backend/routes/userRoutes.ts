@@ -2,11 +2,12 @@
 import express from 'express';
 import User from '../models/User';
 import DailyRecord from '../models/DailyRecord';
+import { adminMiddleware } from '../middleware/adminMiddleware';
 
 const router = express.Router();
 
-// 1. Get All Users
-router.get('/', async (req, res) => {
+// 1. Get All Users (Admin only)
+router.get('/', adminMiddleware, async (req, res) => {
     try {
         const users = await User.find().select('-password_hash');
         res.json(users);
@@ -15,8 +16,8 @@ router.get('/', async (req, res) => {
     }
 });
 
-// 2. Ban/Unban User (Manual Toggle)
-router.post('/:id/ban', async (req, res) => {
+// 2. Ban/Unban User (Manual Toggle) - Admin only
+router.post('/:id/ban', adminMiddleware, async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ msg: 'User not found' });
@@ -29,8 +30,8 @@ router.post('/:id/ban', async (req, res) => {
     }
 });
 
-// 3. Warn User with auto ban
-router.post('/:id/warn', async (req, res) => {
+// 3. Warn User with auto ban - Admin only
+router.post('/:id/warn', adminMiddleware, async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ msg: 'User not found' });
@@ -50,8 +51,8 @@ router.post('/:id/warn', async (req, res) => {
     }
 });
 
-// 4. Delete User 
-router.delete('/:id', async (req, res) => {
+// 4. Delete User - Admin only
+router.delete('/:id', adminMiddleware, async (req, res) => {
     try {
         // 1. Find the user to get their user_id before deletion
         const user = await User.findById(req.params.id);

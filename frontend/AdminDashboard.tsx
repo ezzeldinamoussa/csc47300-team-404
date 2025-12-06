@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
 import './admin.css'; // Importing your CSS ensures it gets bundled
+import { API_BASE } from './config.js';
 
 interface User {
   _id: string;
@@ -30,11 +31,34 @@ const AdminDashboard: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/users');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const res = await fetch(`${API_BASE}/api/users`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        // Unauthorized or forbidden - redirect to login
+        localStorage.removeItem('token');
+        localStorage.removeItem('isAdmin');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch users: ${res.status}`);
+      }
+
       const data = await res.json();
       setUsers(data);
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching users:', err);
     } finally {
       setLoading(false);
     }
@@ -48,19 +72,50 @@ const AdminDashboard: React.FC = () => {
 
   const executeAction = async () => {
     closeModal();
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'login.html';
+      return;
+    }
+
     let url = '';
     let method = 'POST';
 
-    if (modal.action === 'ban') url = `http://localhost:5000/api/users/${modal.userId}/ban`;
-    else if (modal.action === 'warn') url = `http://localhost:5000/api/users/${modal.userId}/warn`;
+    if (modal.action === 'ban') url = `${API_BASE}/api/users/${modal.userId}/ban`;
+    else if (modal.action === 'warn') url = `${API_BASE}/api/users/${modal.userId}/warn`;
     else if (modal.action === 'delete') {
-      url = `http://localhost:5000/api/users/${modal.userId}`;
+      url = `${API_BASE}/api/users/${modal.userId}`;
       method = 'DELETE';
     }
 
     if (url) {
-      await fetch(url, { method });
-      fetchUsers();
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (res.status === 401 || res.status === 403) {
+          // Unauthorized or forbidden - redirect to login
+          localStorage.removeItem('token');
+          localStorage.removeItem('isAdmin');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        if (!res.ok) {
+          throw new Error(`Action failed: ${res.status}`);
+        }
+
+        // Refresh user list after successful action
+        fetchUsers();
+      } catch (err) {
+        console.error('Error executing action:', err);
+        alert('Failed to execute action. Please try again.');
+      }
     }
   };
 
