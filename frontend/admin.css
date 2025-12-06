@@ -120,6 +120,7 @@ tr:hover td { background-color: #f3e8ff; }
 .modal-buttons {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 15px;
 }
 
@@ -143,6 +144,21 @@ tr:hover td { background-color: #f3e8ff; }
     font-weight: bold;
 }
 
+.expandButton{
+    border: none;
+    text-align: 'center';
+    background-color: transparent;
+    font-size: 16px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.details-cell{
+    line-height: 40px;
+    padding-left: 65px;
+}
 .btn-confirm:hover { background-color: #6d28d9; }
 .btn-cancel:hover { background-color: #d1d5db; }
 

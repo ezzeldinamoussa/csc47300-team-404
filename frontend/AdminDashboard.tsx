@@ -11,6 +11,9 @@ interface User {
   total_points: number;
   warnCount: number;
   isBanned: boolean;
+  current_streak: number;
+  total_tasks_completed: number;
+  user_id: string;
 }
 
 interface ModalState {
@@ -24,6 +27,11 @@ const AdminDashboard: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [modal, setModal] = useState<ModalState>({ isOpen: false, action: '', userId: '', username: '' });
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  const toggleExpand = (id: string) => {
+    setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -136,18 +144,20 @@ const AdminDashboard: React.FC = () => {
         <table>
           <thead>
             <tr>
-              <th>Username</th><th>Email</th><th>Joined</th><th>Points</th><th>Warnings</th><th>Actions</th><th>Delete?</th>
+              <th></th><th>Username</th><th>Email</th><th>Joined</th><th>Points</th><th>Warnings</th><th>Actions</th><th>Delete</th>
             </tr>
           </thead>
           <tbody>
             {loading ? <tr><td colSpan={7} style={{textAlign: 'center'}}>Loading...</td></tr> : users.map(user => (
+              <>
               <tr key={user._id}>
+                <td><button className='expandButton' onClick={() => toggleExpand(user._id)}>{expanded[user._id] ? '▾' : '›'}</button></td>
                 <td>{user.username}</td>
                 <td>{user.email}</td>
                 <td>{new Date(user.join_date).toLocaleDateString()}</td>
                 <td>{user.total_points || 0}</td>
                 <td>{user.warnCount || 0}</td>
-                <td>
+                <td style={{textAlign: 'center'}}>
                   {user.isBanned ? <span style={{color: 'red'}}>BANNED</span> : (
                     <>
                       <button onClick={() => openModal('ban', user)} className="btn-action" style={{background: 'red'}}>Ban</button>
@@ -159,6 +169,19 @@ const AdminDashboard: React.FC = () => {
                   <button onClick={() => openModal('delete', user)} className="btn-delete">X</button>
                 </td>
               </tr>
+
+              {expanded[user._id] && (
+                <tr id={`details-${user._id}`} className="details-row">
+                  <td colSpan={8} className="details-cell">
+                    <div className="details-grid">
+                      <div><strong>User ID:</strong> {user.user_id}</div>
+                      <div><strong>Current Streak:</strong> {user.current_streak}</div>
+                      <div><strong>Total Tasks Completed:</strong> {user.total_tasks_completed}</div>
+                    </div>
+                  </td>
+                </tr>
+              )}
+              </>
             ))}
           </tbody>
         </table>
