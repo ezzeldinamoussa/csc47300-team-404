@@ -26,6 +26,18 @@ export function getYesterdayString(): string {
 }
 
 /**
+ * Get tomorrow's date in YYYY-MM-DD format (local time, not UTC)
+ */
+export function getTomorrowString(): string {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const year = tomorrow.getFullYear();
+  const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+  const day = String(tomorrow.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
  * Calculate and update user's streak based on yesterday's completion
  * Streak continues if user completed at least 1 task yesterday
  * Streak resets to 0 if user completed 0 tasks yesterday or didn't log in

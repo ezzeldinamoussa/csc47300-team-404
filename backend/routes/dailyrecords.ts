@@ -2,7 +2,7 @@ import express, { Router, Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import DailyRecord from '../models/DailyRecord'; // Assuming this is your Mongoose model
 import User from '../models/User';
-import { processDailyRollover } from '../utils/dailyRollover';
+import { processDailyRollover, getTodayString, getTomorrowString } from '../utils/dailyRollover';
 
 const router: Router = express.Router();
 
@@ -216,10 +216,8 @@ router.delete('/deleteTask', authMiddleware, async (req: AuthRequest, res: Respo
     }
 
     // Validate date is tomorrow (only tomorrow's tasks can be deleted)
-    const today = new Date().toISOString().split('T')[0];
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    const today = getTodayString();
+    const tomorrowStr = getTomorrowString();
 
     if (date !== tomorrowStr) {
       return res.status(403).json({ msg: 'Can only delete tomorrow\'s tasks' });
