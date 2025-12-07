@@ -155,10 +155,22 @@ tr:hover td { background-color: #f3e8ff; }
     justify-content: center;
 }
 
+.details-row {
+    background-color: #f9fafb;
+}
+
 .details-cell{
     line-height: 40px;
     padding-left: 65px;
 }
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 10px 0;
+}
+
 .btn-confirm:hover { background-color: #6d28d9; }
 .btn-cancel:hover { background-color: #d1d5db; }
 

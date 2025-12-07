@@ -148,9 +148,9 @@ const AdminDashboard: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {loading ? <tr><td colSpan={7} style={{textAlign: 'center'}}>Loading...</td></tr> : users.map(user => (
-              <>
-              <tr key={user._id}>
+            {loading ? <tr><td colSpan={8} style={{textAlign: 'center'}}>Loading...</td></tr> : users.map(user => (
+              <React.Fragment key={user._id}>
+              <tr>
                 <td><button className='expandButton' onClick={() => toggleExpand(user._id)}>{expanded[user._id] ? '▾' : '›'}</button></td>
                 <td>{user.username}</td>
                 <td>{user.email}</td>
@@ -181,7 +181,7 @@ const AdminDashboard: React.FC = () => {
                   </td>
                 </tr>
               )}
-              </>
+              </React.Fragment>
             ))}
           </tbody>
         </table>
