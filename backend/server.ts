@@ -6,6 +6,7 @@ import authRoutes from './routes/auth';
 import dailyRecordsRoutes from './routes/dailyrecords';
 import statsRoutes from './routes/stats'; 
 import userRoutes from './routes/userRoutes';
+import friendsRoutes from './routes/friends';
 // 🛑 NEW IMPORT: Import the new Admin Routes file 🛑
 import adminRoutes from './routes/adminRoutes'; 
 
@@ -38,6 +39,10 @@ app.use('/api/dailyrecords', dailyRecordsRoutes);
 // Stats routes
 app.use('/api/stats', statsRoutes);
 
+// Friends routes
+app.use('/api/friends', friendsRoutes);
+
+//Admin routes
 // Admin routes (User Management, Ban/Warn/Soft Delete)
 // This connects the /api/users URL to userRoutes.ts file
 app.use('/api/users', userRoutes); 

@@ -28,6 +28,50 @@ interface ModalState {
   username: string;
 }
 
+// Notification system
+type NotificationType = 'success' | 'error' | 'info';
+
+const showNotification = (message: string, type: NotificationType = 'info', duration: number = 4000): void => {
+  const container = document.getElementById('notification-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = `notification-toast ${type}`;
+
+  const icons = {
+    success: '✓',
+    error: '✕',
+    info: 'ℹ'
+  };
+
+  toast.innerHTML = `
+    <span class="notification-icon">${icons[type]}</span>
+    <span class="notification-message">${message}</span>
+    <button class="notification-close" aria-label="Close">×</button>
+  `;
+
+  container.appendChild(toast);
+
+  // Auto-remove after duration
+  const autoRemove = setTimeout(() => {
+    removeNotification(toast);
+  }, duration);
+
+  // Manual close button
+  const closeBtn = toast.querySelector('.notification-close');
+  closeBtn?.addEventListener('click', () => {
+    clearTimeout(autoRemove);
+    removeNotification(toast);
+  });
+};
+
+const removeNotification = (toast: HTMLElement): void => {
+  toast.classList.add('hiding');
+  setTimeout(() => {
+    toast.remove();
+  }, 300);
+};
+
 const AdminDashboard: React.FC = () => {
   const [currentUsers, setCurrentUsers] = useState<User[]>([]);
   const [deletedUsers, setDeletedUsers] = useState<User[]>([]);
@@ -98,6 +142,13 @@ const AdminDashboard: React.FC = () => {
         if (!res.ok) {
           throw new Error(`Failed to fetch ${key}: ${res.status}`);
         }
+
+        // Refresh user list after successful action
+        fetchUsers();
+        showNotification('Action completed successfully', 'success');
+      } catch (err) {
+        console.error('Error executing action:', err);
+        showNotification('Failed to execute action. Please try again.', 'error');
         const data: User[] = await res.json();
         setters[key as AdminTab]!(data);
         return data;

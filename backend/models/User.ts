@@ -2,6 +2,9 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 // 1. Define the Interface 
 export interface IUser extends Document {
+  // Friends fields
+  friends?: string[]; // Array of usernames
+  friendRequests?: string[]; // Array of usernames who sent requests
   user_id: string;
   username: string;
   email: string;
@@ -100,6 +103,15 @@ const userSchema = new mongoose.Schema({
     },
   ],
 
+  // Friends fields
+  friends: {
+    type: [String],
+    default: [],
+  },
+  friendRequests: {
+    type: [String],
+    default: [],
+  },
   //Admin Fields
   isAdmin: { 
     type: Boolean, 
