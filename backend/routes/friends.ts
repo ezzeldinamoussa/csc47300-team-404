@@ -37,7 +37,6 @@ const authMiddleware = (req: AuthRequest, res: Response, next: any) => {
 const router = express.Router();
 
 // GET /api/friends/leaderboard
-// Returns user + their friends sorted by total_points (descending)
 router.get('/leaderboard', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user_id) {
@@ -52,12 +51,9 @@ router.get('/leaderboard', authMiddleware, async (req: AuthRequest, res: Respons
     const friendUsernames = currentUser.friends || [];
     const allUsernames = [currentUser.username, ...friendUsernames];
 
-    // Include ALL users (banned/deleted too) - no filtering
     const users = await User.find({
       username: { $in: allUsernames }
     }).select('username total_points current_streak highest_streak isBanned isDeleted').sort({ total_points: -1 });
-
-    // NO cleanup - keep friends lists as-is
 
     res.json(users);
   } catch (err: any) {
@@ -66,8 +62,7 @@ router.get('/leaderboard', authMiddleware, async (req: AuthRequest, res: Respons
   }
 });
 
-// GET /api/friends/search?username=xxx
-// Search users by username
+// GET /api/friends/search
 router.get('/search', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user_id) {
@@ -76,7 +71,7 @@ router.get('/search', authMiddleware, async (req: AuthRequest, res: Response) =>
 
     const { username } = req.query;
     if (!username || typeof username !== 'string') {
-      return res.status(400).json({ msg: 'Username query parameter required' });
+      return res.status(400).json({ msg: 'Username required' });
     }
 
     const currentUser = await User.findOne({ user_id: req.user_id });
@@ -84,14 +79,14 @@ router.get('/search', authMiddleware, async (req: AuthRequest, res: Response) =>
       return res.status(404).json({ msg: 'Current user not found' });
     }
 
-    // Don't allow searching for yourself
     if (username.toLowerCase() === currentUser.username.toLowerCase()) {
       return res.status(400).json({ msg: 'Cannot search for yourself' });
     }
 
+    // 🛑 Projection updated to include isDeleted 🛑
     const targetUser = await User.findOne({ 
       username: { $regex: new RegExp(`^${username}$`, 'i') } 
-    }).select('username');
+    }).select('username isDeleted'); 
 
     if (!targetUser) {
       return res.json({ exists: false });
@@ -111,6 +106,7 @@ router.get('/search', authMiddleware, async (req: AuthRequest, res: Response) =>
     res.json({
       exists: true,
       username: targetUser.username,
+      isDeleted: targetUser.isDeleted || false, // Ensure flag is sent
       isFriend,
       hasIncomingRequest,
       hasOutgoingRequest,

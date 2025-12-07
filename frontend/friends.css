@@ -1,396 +1,381 @@
 body {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #e0dcfa;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #e0dcfa;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 40px;
-  position: relative;
-  background-color: #cdc3fd;
-  border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    position: relative;
+    background-color: #cdc3fd;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .logo {
-  height: 50px;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+    height: 50px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .logo img {
-  height: 100%;
-  width: auto;
-  display: block;
+    height: 100%;
+    width: auto;
+    display: block;
 }
 
 .nav-button {
-  display: inline-block;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 0 5px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.1s ease-in-out;
-  background-color: #7c3aed;
-  color: #ffffff;
-  border: none;
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 0 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.1s ease-in-out;
+    background-color: #7c3aed;
+    color: #ffffff;
+    border: none;
 }
 
 .nav-button:hover {
-  background-color: #6d28d9;
+    background-color: #6d28d9;
 }
 
 .nav-button:active {
-  background-color: #16a34a;
-  transform: translateY(1px);
+    background-color: #16a34a;
+    transform: translateY(1px);
 }
 
 .nav-button.active {
-  background-color: #16a34a;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-  cursor: default;
+    background-color: #16a34a;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    cursor: default;
 }
 
 .nav-button.active:hover {
-  background-color: #16a34a;
+    background-color: #16a34a;
 }
 
 /* Friends Page */
 .leaderboard {
-  width: 500px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+    width: 500px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* 🛑 NEW: Purple border added to match tasks page style */
+    border: 2px solid #7c3aed;
 }
 
 .leaderboard-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .tabs .tab {
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  font-weight: 600;
-  color: #333;
-  font-size: 15px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    font-weight: 600;
+    color: #333;
+    font-size: 15px;
 }
 
 .tabs .tab.active {
-  background: #16a34a;
-  color: #fff;
-  border-color: rgba(0, 0, 0, 0.06);
+    background: #16a34a;
+    color: #fff;
+    border-color: rgba(0, 0, 0, 0.06);
 }
 
 .filter-controls .filter {
-  min-width: 140px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #e6e6e6;
-  background: #fff;
-  font-size: 14px;
-  cursor: pointer;
+    min-width: 140px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #e6e6e6;
+    background: #fff;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 .leaderboard-title {
-  margin: 0;
-  font-size: 25px;
-  padding-top: 4px;
+    margin: 0;
+    font-size: 25px;
+    padding-top: 4px;
 }
 
 .leaderboard-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    margin-top: 10px;
 }
 
 .people-list {
-  border: 1px solid #e6e6e6;
-  border-radius: 8px;
-  background: rgba(176, 175, 175, 0.078);
-  padding: 8px;
-  max-height: 300px;
-  overflow: auto;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    background: rgba(176, 175, 175, 0.078);
+    padding: 8px;
+    max-height: 300px;
+    overflow: auto;
 }
 
 .people-list ol {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .people-list li {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px;
-  align-items: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.073);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.073);
 }
 
 .people-list li:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .people-list .name {
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .people-list .pts {
-  color: #4d4c4c;
-  font-size: 14px;
+    color: #4d4c4c;
+    font-size: 14px;
 }
 
 .leaderboard-container {
-  margin-top: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    margin-top: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .friend {
-  cursor: pointer;
-  border: 1px solid rgba(211, 208, 208, 0.793);
-  border-radius: 5px;
-  background-color: rgba(238, 236, 236, 0.892);
-  width: 100%;
-  margin-top: 15px;
-  padding: 10px;
-  font-weight: 600;
-  font-size: 16px;
-  color: rgb(41, 41, 41);
+    cursor: pointer;
+    border: 1px solid rgba(211, 208, 208, 0.793);
+    border-radius: 5px;
+    background-color: rgba(238, 236, 236, 0.892);
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    color: rgb(41, 41, 41);
 }
 
 .friend:hover {
-  background-color: rgb(221, 220, 220);
-}
-
-.friend-form{
-    width: 40%;
-}
-.friend-form .friend-form-contents {
-  border: 1px solid white;
-  border-radius: 5px;
-  box-shadow: 1px 2px 2px rgba(125, 124, 124, 0.3);
-  background: white;
-}
-.close {
-  float: right;
-  border: none;
-  padding: 5px;
-  background: transparent;
-  cursor: pointer;
+    background-color: rgb(221, 220, 220);
 }
 
 /* Notification Toast Styles */
 .notification-toast {
-  background-color: white;
-  border-radius: 8px;
-  padding: 16px 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  min-width: 300px;
-  max-width: 400px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  animation: slideInRight 0.3s ease-out;
-  border-left: 4px solid;
+    background-color: white;
+    border-radius: 8px;
+    padding: 16px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideInRight 0.3s ease-out;
+    border-left: 4px solid;
 }
 
 .notification-toast.success {
-  border-left-color: #16a34a;
+    border-left-color: #16a34a;
 }
 
 .notification-toast.error {
-  border-left-color: #dc2626;
+    border-left-color: #dc2626;
 }
 
 .notification-toast.info {
-  border-left-color: #7c3aed;
+    border-left-color: #7c3aed;
 }
 
 .notification-toast .notification-icon {
-  font-size: 20px;
-  flex-shrink: 0;
+    font-size: 20px;
+    flex-shrink: 0;
 }
 
 .notification-toast.success .notification-icon {
-  color: #16a34a;
+    color: #16a34a;
 }
 
 .notification-toast.error .notification-icon {
-  color: #dc2626;
+    color: #dc2626;
 }
 
 .notification-toast.info .notification-icon {
-  color: #7c3aed;
+    color: #7c3aed;
 }
 
 .notification-toast .notification-message {
-  flex: 1;
-  font-size: 14px;
-  color: #333;
-  font-weight: 500;
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
 }
 
 .notification-toast .notification-close {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: #999;
-  cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: color 0.2s;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: color 0.2s;
 }
 
 .notification-toast .notification-close:hover {
-  color: #333;
+    color: #333;
 }
 
 @keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 @keyframes slideOutRight {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
 }
 
 .notification-toast.hiding {
-  animation: slideOutRight 0.3s ease-out forwards;
+    animation: slideOutRight 0.3s ease-out forwards;
 }
 
 /* Confirmation Modal Styles */
 .confirm-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10001;
-  animation: fadeIn 0.2s ease-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+    animation: fadeIn 0.2s ease-out;
 }
 
 .confirm-modal-box {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  border: 2px solid #7c3aed;
-  animation: popIn 0.3s ease-out;
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 2px solid #7c3aed;
+    animation: popIn 0.3s ease-out;
 }
 
 .confirm-modal-title {
-  color: #5b21b6;
-  margin: 0 0 15px 0;
-  font-size: 1.5rem;
-  font-weight: 600;
+    color: #5b21b6;
+    margin: 0 0 15px 0;
+    font-size: 1.5rem;
+    font-weight: 600;
 }
 
 .confirm-modal-message {
-  color: #666;
-  margin: 0 0 25px 0;
-  font-size: 1rem;
-  line-height: 1.5;
+    color: #666;
+    margin: 0 0 25px 0;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 .confirm-modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
 }
 
 .confirm-modal-cancel,
 .confirm-modal-confirm {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.2s;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
 }
 
 .confirm-modal-cancel {
-  background-color: #e5e7eb;
-  color: #374151;
+    background-color: #e5e7eb;
+    color: #374151;
 }
 
 .confirm-modal-cancel:hover {
-  background-color: #d1d5db;
+    background-color: #d1d5db;
 }
 
 .confirm-modal-confirm {
-  background-color: #dc2626;
-  color: white;
+    background-color: #dc2626;
+    color: white;
 }
 
 .confirm-modal-confirm:hover {
-  background-color: #b91c1c;
+    background-color: #b91c1c;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes popIn {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }

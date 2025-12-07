@@ -16,6 +16,7 @@ interface SearchResult {
   hasIncomingRequest?: boolean;
   hasOutgoingRequest?: boolean;
   canSendRequest?: boolean;
+  isDeleted?: boolean;
 }
 
 // Get auth token
@@ -55,12 +56,10 @@ function showNotification(message: string, type: NotificationType = 'info', dura
 
   container.appendChild(toast);
 
-  // Auto-remove after duration
   const autoRemove = setTimeout(() => {
     removeNotification(toast);
   }, duration);
 
-  // Manual close button
   const closeBtn = toast.querySelector('.notification-close');
   closeBtn?.addEventListener('click', () => {
     clearTimeout(autoRemove);
@@ -75,17 +74,15 @@ function removeNotification(toast: HTMLElement): void {
   }, 300);
 }
 
-// Get current user's username from token (we'll need to fetch it)
 let currentUsername: string | null = null;
 
 async function getCurrentUsername(): Promise<string | null> {
   if (currentUsername) return currentUsername;
-  
+
   const token = getToken();
   if (!token) return null;
 
   try {
-    // Decode JWT to get username (or fetch from stats endpoint)
     const res = await fetch(`${API_BASE}/api/stats`, {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -103,7 +100,6 @@ async function getCurrentUsername(): Promise<string | null> {
   return null;
 }
 
-// Fetch leaderboard
 async function fetchLeaderboard(): Promise<void> {
   const token = getToken();
   if (!token) return;
@@ -132,7 +128,6 @@ async function fetchLeaderboard(): Promise<void> {
   }
 }
 
-// Display leaderboard
 function displayLeaderboard(users: LeaderboardUser[], currentUsername: string | null): void {
   const list = document.querySelector('.people-list ol');
   if (!list) return;
@@ -146,18 +141,17 @@ function displayLeaderboard(users: LeaderboardUser[], currentUsername: string | 
 
   users.forEach((user) => {
     const isCurrentUser = currentUsername && user.username === currentUsername;
-    
-    // Determine status label
+
     let statusLabel = '';
     let statusColor = '';
     if (user.isDeleted) {
       statusLabel = ' (Deleted)';
-      statusColor = '#dc2626'; // Red
+      statusColor = '#dc2626';
     } else if (user.isBanned) {
       statusLabel = ' (Banned)';
-      statusColor = '#f59e0b'; // Orange
+      statusColor = '#f59e0b';
     }
-    
+
     const li = document.createElement('li');
     li.innerHTML = `
       <div>
@@ -177,7 +171,6 @@ function displayLeaderboard(users: LeaderboardUser[], currentUsername: string | 
     list.appendChild(li);
   });
 
-  // Add event listeners for remove buttons
   document.querySelectorAll('.remove-friend-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       const username = (e.target as HTMLElement).getAttribute('data-username');
@@ -188,12 +181,12 @@ function displayLeaderboard(users: LeaderboardUser[], currentUsername: string | 
   });
 }
 
-// Update search results display
 function updateSearchResults(result: SearchResult): void {
   const searchResults = document.getElementById('search-results');
   if (!searchResults) return;
 
-  if (!result.exists) {
+  // 🛑 FIX: Treat deleted accounts or non-existent accounts as "User not found" 🛑
+  if (!result.exists || result.isDeleted) {
     searchResults.innerHTML = '<p style="color: #dc2626;">User not found</p>';
     return;
   }
@@ -206,10 +199,10 @@ function updateSearchResults(result: SearchResult): void {
     searchResults.innerHTML = `
       <div>
         <p style="margin-bottom: 8px;">${result.username} has sent you a friend request!</p>
-        <button class="accept-btn-search" data-username="${result.username}" style="padding: 6px 12px; background: #16a34a; color: white; border: none; border-radius: 4px; cursor: pointer;">Accept</button>
+        <button id="accept-search-btn" style="padding: 6px 12px; background: #16a34a; color: white; border: none; border-radius: 4px; cursor: pointer;">Accept</button>
       </div>
     `;
-    document.querySelector('.accept-btn-search')?.addEventListener('click', async () => {
+    document.getElementById('accept-search-btn')?.addEventListener('click', async () => {
       await acceptFriendRequest(result.username!);
       const searchInput = document.getElementById('friend-search-input') as HTMLInputElement;
       if (searchInput) searchInput.value = '';
@@ -219,10 +212,10 @@ function updateSearchResults(result: SearchResult): void {
     searchResults.innerHTML = `
       <div>
         <p style="margin-bottom: 8px;">Found: ${result.username}</p>
-        <button class="send-request-btn" data-username="${result.username}" style="padding: 6px 12px; background: #7c3aed; color: white; border: none; border-radius: 4px; cursor: pointer;">Send Friend Request</button>
+        <button id="send-request-btn" style="padding: 6px 12px; background: #7c3aed; color: white; border: none; border-radius: 4px; cursor: pointer;">Send Friend Request</button>
       </div>
     `;
-    document.querySelector('.send-request-btn')?.addEventListener('click', async () => {
+    document.getElementById('send-request-btn')?.addEventListener('click', async () => {
       const success = await sendFriendRequest(result.username!);
       if (success) {
         const searchInput = document.getElementById('friend-search-input') as HTMLInputElement;
@@ -233,7 +226,6 @@ function updateSearchResults(result: SearchResult): void {
   }
 }
 
-// Search user
 async function searchUser(username: string): Promise<SearchResult | null> {
   const token = getToken();
   if (!token) return null;
@@ -250,37 +242,17 @@ async function searchUser(username: string): Promise<SearchResult | null> {
       return null;
     }
 
-    if (!res.ok) {
-      const data = await res.json();
-      if (res.status === 400) {
-        return { exists: false, ...data };
-      }
-      throw new Error('Search failed');
-    }
-
-    return await res.json();
+    const data = await res.json();
+    return data;
   } catch (err) {
     console.error('Error searching user:', err);
     return null;
   }
 }
 
-// Send friend request
 async function sendFriendRequest(username: string): Promise<boolean> {
   const token = getToken();
   if (!token) return false;
-
-  // Double-check before sending to prevent duplicate requests
-  const searchResult = await searchUser(username);
-  if (searchResult && searchResult.hasOutgoingRequest) {
-    showNotification('Friend request already sent to this user', 'error');
-    return false;
-  }
-
-  if (searchResult && searchResult.isFriend) {
-    showNotification('You are already friends with this user', 'error');
-    return false;
-  }
 
   try {
     const res = await fetch(`${API_BASE}/api/friends/request`, {
@@ -292,44 +264,28 @@ async function sendFriendRequest(username: string): Promise<boolean> {
       body: JSON.stringify({ username })
     });
 
-    if (res.status === 401) {
-      window.location.href = 'login.html';
-      return false;
-    }
+    const data = await res.json();
 
     if (!res.ok) {
-      const data = await res.json();
       showNotification(data.msg || 'Failed to send request', 'error');
-      // Refresh search results to show updated state
-      const updatedResult = await searchUser(username);
-      if (updatedResult) {
-        updateSearchResults(updatedResult);
-      }
       return false;
     }
 
-    const data = await res.json();
     if (data.autoAccepted) {
       showNotification('Friend request auto-accepted! You are now friends!', 'success');
       fetchLeaderboard();
       fetchFriendRequests();
     } else {
       showNotification('Friend request sent!', 'success');
-      // Refresh search results to show updated state (request already sent)
-      const updatedResult = await searchUser(username);
-      if (updatedResult) {
-        updateSearchResults(updatedResult);
-      }
     }
     return true;
   } catch (err) {
     console.error('Error sending friend request:', err);
-    showNotification('Failed to send friend request. Please try again.', 'error');
+    showNotification('Failed to send friend request.', 'error');
     return false;
   }
 }
 
-// Fetch friend requests
 async function fetchFriendRequests(): Promise<void> {
   const token = getToken();
   if (!token) return;
@@ -341,29 +297,21 @@ async function fetchFriendRequests(): Promise<void> {
       }
     });
 
-    if (res.status === 401) {
-      window.location.href = 'login.html';
-      return;
+    if (res.ok) {
+      const requests: string[] = await res.json();
+      displayFriendRequests(requests);
     }
-
-    if (!res.ok) {
-      throw new Error('Failed to fetch requests');
-    }
-
-    const requests: string[] = await res.json();
-    displayFriendRequests(requests);
   } catch (err) {
     console.error('Error fetching friend requests:', err);
   }
 }
 
-// Display friend requests
 function displayFriendRequests(requests: string[]): void {
   const container = document.getElementById('friend-requests-container');
   if (!container) return;
 
   if (requests.length === 0) {
-    container.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No pending friend requests</p>';
+    container.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No pending requests</p>';
     return;
   }
 
@@ -377,31 +325,23 @@ function displayFriendRequests(requests: string[]): void {
     </div>
   `).join('');
 
-  // Add event listeners
   document.querySelectorAll('.accept-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       const username = (e.target as HTMLElement).getAttribute('data-username');
-      if (username) {
-        await acceptFriendRequest(username);
-      }
+      if (username) await acceptFriendRequest(username);
     });
   });
 
   document.querySelectorAll('.deny-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       const username = (e.target as HTMLElement).getAttribute('data-username');
-      if (username) {
-        await denyFriendRequest(username);
-      }
+      if (username) await denyFriendRequest(username);
     });
   });
 }
 
-// Accept friend request
 async function acceptFriendRequest(username: string): Promise<void> {
   const token = getToken();
-  if (!token) return;
-
   try {
     const res = await fetch(`${API_BASE}/api/friends/accept`, {
       method: 'POST',
@@ -412,31 +352,18 @@ async function acceptFriendRequest(username: string): Promise<void> {
       body: JSON.stringify({ username })
     });
 
-    if (res.status === 401) {
-      window.location.href = 'login.html';
-      return;
+    if (res.ok) {
+      showNotification('Friend request accepted!', 'success');
+      fetchLeaderboard();
+      fetchFriendRequests();
     }
-
-    if (!res.ok) {
-      const data = await res.json();
-      showNotification(data.msg || 'Failed to accept request', 'error');
-      return;
-    }
-
-    showNotification('Friend request accepted!', 'success');
-    fetchLeaderboard();
-    fetchFriendRequests();
   } catch (err) {
     console.error('Error accepting friend request:', err);
-    showNotification('Failed to accept friend request. Please try again.', 'error');
   }
 }
 
-// Deny friend request
 async function denyFriendRequest(username: string): Promise<void> {
   const token = getToken();
-  if (!token) return;
-
   try {
     const res = await fetch(`${API_BASE}/api/friends/deny`, {
       method: 'POST',
@@ -447,26 +374,39 @@ async function denyFriendRequest(username: string): Promise<void> {
       body: JSON.stringify({ username })
     });
 
-    if (res.status === 401) {
-      window.location.href = 'login.html';
-      return;
+    if (res.ok) {
+      showNotification('Friend request denied', 'info');
+      fetchFriendRequests();
     }
-
-    if (!res.ok) {
-      const data = await res.json();
-      showNotification(data.msg || 'Failed to deny request', 'error');
-      return;
-    }
-
-    showNotification('Friend request denied', 'info');
-    fetchFriendRequests();
   } catch (err) {
     console.error('Error denying friend request:', err);
-    showNotification('Failed to deny friend request. Please try again.', 'error');
   }
 }
 
-// Show confirmation modal
+async function removeFriend(username: string): Promise<void> {
+  const confirmed = await showConfirmModal(`Remove ${username}?`, 'Remove Friend');
+  if (!confirmed) return;
+
+  const token = getToken();
+  try {
+    const res = await fetch(`${API_BASE}/api/friends/remove`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username })
+    });
+
+    if (res.ok) {
+      showNotification('Removed friend', 'info');
+      fetchLeaderboard();
+    }
+  } catch (err) {
+    console.error('Error removing friend:', err);
+  }
+}
+
 function showConfirmModal(message: string, title: string = 'Confirm Action'): Promise<boolean> {
   return new Promise((resolve) => {
     const modal = document.getElementById('confirm-modal');
@@ -484,103 +424,34 @@ function showConfirmModal(message: string, title: string = 'Confirm Action'): Pr
     messageEl.textContent = message;
     modal.style.display = 'flex';
 
-    const cleanup = () => {
-      modal.style.display = 'none';
-      cancelBtn.onclick = null;
-      confirmBtn.onclick = null;
-    };
-
     cancelBtn.onclick = () => {
-      cleanup();
+      modal.style.display = 'none';
       resolve(false);
     };
 
     confirmBtn.onclick = () => {
-      cleanup();
+      modal.style.display = 'none';
       resolve(true);
     };
   });
 }
 
-// Remove friend
-async function removeFriend(username: string): Promise<void> {
-  const confirmed = await showConfirmModal(
-    `Remove ${username} from your friends?`,
-    'Remove Friend'
-  );
-  
-  if (!confirmed) {
-    return;
-  }
-
-  const token = getToken();
-  if (!token) return;
-
-  try {
-    const res = await fetch(`${API_BASE}/api/friends/remove`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username })
-    });
-
-    if (res.status === 401) {
-      window.location.href = 'login.html';
-      return;
-    }
-
-    if (!res.ok) {
-      const data = await res.json();
-      showNotification(data.msg || 'Failed to remove friend', 'error');
-      return;
-    }
-
-    showNotification(`${username} removed from friends`, 'info');
-    fetchLeaderboard();
-  } catch (err) {
-    console.error('Error removing friend:', err);
-    showNotification('Failed to remove friend. Please try again.', 'error');
-  }
-}
-
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
   checkAuth();
   fetchLeaderboard();
   fetchFriendRequests();
 
-  // Search functionality
   const searchInput = document.getElementById('friend-search-input') as HTMLInputElement;
   const searchBtn = document.getElementById('friend-search-btn');
-  const searchResults = document.getElementById('search-results');
 
-  if (searchBtn && searchInput && searchResults) {
-    // Allow Enter key to trigger search
-    searchInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        searchBtn.click();
-      }
-    });
+  searchBtn?.addEventListener('click', async () => {
+    const username = searchInput.value.trim();
+    if (!username) return;
 
-    searchBtn.addEventListener('click', async () => {
-      const username = searchInput.value.trim();
-      if (!username) {
-        showNotification('Please enter a username', 'error');
-        return;
-      }
+    const resultsDiv = document.getElementById('search-results');
+    if (resultsDiv) resultsDiv.innerHTML = '<p>Searching...</p>';
 
-      searchResults.innerHTML = '<p style="color: #666; text-align: center;">Searching...</p>';
-
-      const result = await searchUser(username);
-      if (!result) {
-        searchResults.innerHTML = '<p style="color: #dc2626;">User not found</p>';
-        return;
-      }
-
-      updateSearchResults(result);
-    });
-  }
+    const result = await searchUser(username);
+    if (result) updateSearchResults(result);
+  });
 });
-

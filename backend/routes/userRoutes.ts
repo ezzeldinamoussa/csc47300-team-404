@@ -90,40 +90,27 @@ router.post('/:id/warn', adminAuthMiddleware(1), async (req: Request, res: Respo
 });
 
 // 4. Delete User (SOFT DELETE IMPLEMENTATION)
-// @access: Admin 2 ONLY 
 router.delete('/:id', adminAuthMiddleware(2), async (req: Request, res: Response) => {
-    try {
-        // 1. Find the user by Mongoose _id
-        const user = await User.findById(req.params.id);
-        if (!user) return res.status(404).json({ msg: 'User not found' });
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ msg: 'User not found' });
 
-        const userIdToDelete = user.user_id; 
-        const isUserAdmin = user.adminLevel > 0;
+        const userIdToDelete = user.user_id; 
 
-        // 2. Perform SOFT DELETE on the User document
-        user.isDeleted = true;
-        // 🛑 Special Admin 2 logic: If deleting an Admin, demote them first
-        if (isUserAdmin) {
-            user.isAdmin = false;
-            user.adminLevel = 0;
-        }
-        await user.save();
-        
-        // 3. Perform SOFT DELETE on ASSOCIATED DAILY RECORDS
-        await DailyRecord.updateMany(
-            { user_id: userIdToDelete },
-            { $set: { isDeleted: true } }
-        );
-        
-        const msg = isUserAdmin 
-          ? 'Admin demoted and soft-deleted successfully.' 
-          : 'User and all associated data soft-deleted successfully.';
-
-        res.json({ msg });
-    } catch (err) {
-        console.error('Soft delete error:', err);
-        res.status(500).send('Server Error');
-    }
+        // 🛑 EDITED: Removed demotion logic. Keep isAdmin and adminLevel as is 🛑
+        user.isDeleted = true;
+        await user.save();
+        
+        await DailyRecord.updateMany(
+            { user_id: userIdToDelete },
+            { $set: { isDeleted: true } }
+        );
+        
+        res.json({ msg: 'Account and associated data soft-deleted successfully.' });
+    } catch (err) {
+        console.error('Soft delete error:', err);
+        res.status(500).send('Server Error');
+    }
 });
 
 

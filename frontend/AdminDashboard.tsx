@@ -1,118 +1,92 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
-import './admin.css'; // Importing your CSS ensures it gets bundled
-import { API_BASE } from './config.js'; // Using the configurable API base URL
+import './admin.css'; 
+import { API_BASE } from './config.js'; 
 
 // Define the type for the four sections
 type AdminTab = 'currentUsers' | 'deletedUsers' | 'currentAdmins' | 'deletedAdmins';
 
 interface User {
-  _id: string;
-  username: string;
-  email: string;
-  join_date: string;
-  total_points: number;
-  warnCount: number;
-  isBanned: boolean;
+  _id: string;
+  username: string;
+  email: string;
+  join_date: string;
+  total_points: number;
+  warnCount: number;
+  isBanned: boolean;
   isAdmin: boolean; 
   adminLevel: number; 
-  current_streak: number; 
-  total_tasks_completed: number; 
-  user_id: string; 
+  current_streak: number; 
+  total_tasks_completed: number; 
+  user_id: string; 
 }
 
 interface ModalState {
-  isOpen: boolean;
-  action: 'ban' | 'warn' | 'delete' | 'restore' | 'unban' | ''; // Added 'unban'
-  userId: string; // Mongoose _id
-  username: string;
+  isOpen: boolean;
+  action: 'ban' | 'warn' | 'delete' | 'restore' | 'unban' | ''; 
+  userId: string; 
+  username: string;
 }
 
-// Notification system
-type NotificationType = 'success' | 'error' | 'info';
+// 🛑 NEW: State for the Create Admin Modal 🛑
+interface CreateAdminModalState {
+    isOpen: boolean;
+    username: string;
+    email: string;
+    password: string;
+    adminLevel: number;
+}
 
-const showNotification = (message: string, type: NotificationType = 'info', duration: number = 4000): void => {
-  const container = document.getElementById('notification-container');
-  if (!container) return;
-
-  const toast = document.createElement('div');
-  toast.className = `notification-toast ${type}`;
-
-  const icons = {
-    success: '✓',
-    error: '✕',
-    info: 'ℹ'
-  };
-
-  toast.innerHTML = `
-    <span class="notification-icon">${icons[type]}</span>
-    <span class="notification-message">${message}</span>
-    <button class="notification-close" aria-label="Close">×</button>
-  `;
-
-  container.appendChild(toast);
-
-  // Auto-remove after duration
-  const autoRemove = setTimeout(() => {
-    removeNotification(toast);
-  }, duration);
-
-  // Manual close button
-  const closeBtn = toast.querySelector('.notification-close');
-  closeBtn?.addEventListener('click', () => {
-    clearTimeout(autoRemove);
-    removeNotification(toast);
-  });
-};
-
-const removeNotification = (toast: HTMLElement): void => {
-  toast.classList.add('hiding');
-  setTimeout(() => {
-    toast.remove();
-  }, 300);
-};
 
 const AdminDashboard: React.FC = () => {
-  const [currentUsers, setCurrentUsers] = useState<User[]>([]);
-  const [deletedUsers, setDeletedUsers] = useState<User[]>([]);
-  const [currentAdmins, setCurrentAdmins] = useState<User[]>([]);
-  const [deletedAdmins, setDeletedAdmins] = useState<User[]>([]);
-  const [activeTab, setActiveTab] = useState<AdminTab>('currentUsers');
+  const [currentUsers, setCurrentUsers] = useState<User[]>([]);
+  const [deletedUsers, setDeletedUsers] = useState<User[]>([]);
+  const [currentAdmins, setCurrentAdmins] = useState<User[]>([]);
+  const [deletedAdmins, setDeletedAdmins] = useState<User[]>([]);
+  const [activeTab, setActiveTab] = useState<AdminTab>('currentUsers');
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [modal, setModal] = useState<ModalState>({ isOpen: false, action: '', userId: '', username: '' });
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({}); 
-  const [adminLevel, setAdminLevel] = useState<number>(0); 
+  const [loading, setLoading] = useState<boolean>(true);
+  const [modal, setModal] = useState<ModalState>({ isOpen: false, action: '', userId: '', username: '' });
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({}); 
+  const [adminLevel, setAdminLevel] = useState<number>(0); 
+  
+  const [createAdminModal, setCreateAdminModal] = useState<CreateAdminModalState>({ 
+    isOpen: false, 
+    username: '', 
+    email: '', 
+    password: '', 
+    adminLevel: 1 
+  }); 
 
-  const toggleExpand = (id: string) => {
-    setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
-  };
+  const toggleExpand = (id: string) => {
+    setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
-  useEffect(() => {
-    const level = parseInt(localStorage.getItem('adminLevel') || '0', 10);
-    setAdminLevel(level);
+  useEffect(() => {
+    const level = parseInt(localStorage.getItem('adminLevel') || '0', 10);
+    setAdminLevel(level);
 
     if (level === 1 && (activeTab === 'deletedUsers' || activeTab === 'deletedAdmins')) {
         setActiveTab('currentUsers');
     }
 
-    fetchAllUsers(); 
-  }, [adminLevel, activeTab]); 
+    fetchAllUsers(); 
+  }, [adminLevel, activeTab]); 
 
   const handleUnauthorized = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('isAdmin');
-    localStorage.removeItem('adminLevel');
-    window.location.href = 'login.html';
+    localStorage.removeItem('token');
+    localStorage.removeItem('isAdmin');
+    localStorage.removeItem('adminLevel');
+    window.location.href = 'login.html';
   };
 
-  const fetchAllUsers = async () => {
-    setLoading(true);
-    const token = localStorage.getItem('token');
-    if (!token) {
-      handleUnauthorized();
-      return;
-    }
+  const fetchAllUsers = async () => {
+    setLoading(true);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
     
     const urls: Partial<Record<AdminTab, string>> = {};
     const setters: Partial<Record<AdminTab, React.Dispatch<React.SetStateAction<User[]>>>> = {};
@@ -128,258 +102,235 @@ const AdminDashboard: React.FC = () => {
     const fetches = Object.entries(urls).map(async ([key, url]) => {
       try {
         const res = await fetch(url!, { headers: { 'Authorization': `Bearer ${token}` } });
-        
         if (res.status === 401) {
           handleUnauthorized();
           return [];
         }
-        
         if (res.status === 403) {
             setters[key as AdminTab]!([]); 
             return []; 
         }
-
-        if (!res.ok) {
-          throw new Error(`Failed to fetch ${key}: ${res.status}`);
-        }
-
+        if (!res.ok) throw new Error(`Failed to fetch ${key}`);
         const data: User[] = await res.json();
         setters[key as AdminTab]!(data);
         return data;
       } catch (err) {
-        console.error(`Error fetching ${key}:`, err);
-        setters[key as AdminTab]!([]);
         return [];
       }
     });
 
     await Promise.all(fetches);
-    setLoading(false);
-  };
+    setLoading(false);
+  };
 
-  const openModal = (action: 'ban' | 'warn' | 'delete' | 'restore' | 'unban', user: User) => {
-    setModal({ isOpen: true, action, userId: user._id, username: user.username });
-  };
+  const openModal = (action: 'ban' | 'warn' | 'delete' | 'restore' | 'unban', user: User) => {
+    setModal({ isOpen: true, action, userId: user._id, username: user.username });
+  };
 
-  const closeModal = () => setModal(prev => ({ ...prev, isOpen: false }));
+  const closeModal = () => setModal(prev => ({ ...prev, isOpen: false }));
+  
+  const openCreateAdminModal = () => {
+      setCreateAdminModal({ isOpen: true, username: '', email: '', password: '', adminLevel: 1 });
+  };
+  const closeCreateAdminModal = () => {
+      setCreateAdminModal(prev => ({ ...prev, isOpen: false }));
+  };
 
-  const executeAction = async () => {
-    closeModal();
-    const token = localStorage.getItem('token');
-    if (!token) {
-      handleUnauthorized();
-      return;
-    }
+  const executeAction = async () => {
+    closeModal();
+    const token = localStorage.getItem('token');
+    if (!token) { handleUnauthorized(); return; }
 
-    let url = '';
-    let method = 'POST';
-    let action = modal.action;
+    let url = '';
+    let method = 'POST';
+    let bodyData: any = {};
 
-    // 🛑 NEW: 'ban' and 'unban' use the same base route but may imply different payloads/logic 🛑
-    if (action === 'ban' || action === 'unban') url = `${API_BASE}/api/users/${modal.userId}/ban`; 
-    else if (action === 'warn') url = `${API_BASE}/api/users/${modal.userId}/warn`;
-    else if (action === 'delete') {
-      url = `${API_BASE}/api/users/${modal.userId}`;
-      method = 'DELETE';
-    } else if (action === 'restore') { 
+    if (modal.action === 'ban' || modal.action === 'unban') {
+      url = `${API_BASE}/api/users/${modal.userId}/ban`; 
+      bodyData = { isBanned: modal.action === 'ban' };
+    }
+    else if (modal.action === 'warn') url = `${API_BASE}/api/users/${modal.userId}/warn`;
+    else if (modal.action === 'delete') {
+      url = `${API_BASE}/api/users/${modal.userId}`;
+      method = 'DELETE';
+    } else if (modal.action === 'restore') { 
       url = `${API_BASE}/api/users/${modal.userId}/restore`; 
       method = 'POST';
     }
 
-    if (url) {
-      try {
-        const res = await fetch(url, {
-          method,
-          // 🛑 NEW: Send the required action (true/false) in the body for the /ban route 🛑
-          body: JSON.stringify({ isBanned: action === 'ban' }),
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-        });
-
-        if (res.status === 401) {
-          handleUnauthorized();
-          return;
-        }
-        
+    if (url) {
+      try {
+        const res = await fetch(url, {
+          method,
+          body: method === 'DELETE' ? undefined : JSON.stringify(bodyData),
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+        });
+        if (res.status === 401) { handleUnauthorized(); return; }
         if (modal.action === 'delete' && res.status === 403) {
-            showNotification('🚫 Deletion Failed: Only Admin Level 2 users can soft-delete user accounts.', 'error');
+            alert('🚫 Deletion Failed: Only Admin Level 2 users can soft-delete accounts.');
             return; 
         }
-        
-        if (res.status === 403) {
-            showNotification('🚫 Action Failed: You do not have the required admin privilege for this action.', 'error');
-            return;
-        }
-
-        if (!res.ok) {
-          throw new Error(`Action failed: ${res.status}`);
-        }
-        
-        const result = await res.json();
-        showNotification(result.msg || 'Action executed successfully.', 'success');
-
+        if (res.status === 403) { alert('🚫 Action Forbidden.'); return; }
+        if (!res.ok) throw new Error(`Action failed`);
         fetchAllUsers();
       } catch (err) {
-        console.error('Error executing action:', err);
-        showNotification('A server error occurred. Please check the console.', 'error');
+        alert('An error occurred.');
       }
-    }
-  };
-
-  const getModalContent = () => {
-    switch (modal.action) {
-      case 'ban': return { title: 'Confirm Ban?', text: `Are you sure you want to BAN ${modal.username}?`, btnColor: '#dc2626' };
-      case 'unban': return { title: 'Confirm Unban?', text: `Are you sure you want to UNBAN ${modal.username}?`, btnColor: '#10b981' };
-      case 'warn': return { title: 'Warn User?', text: `Send warning to ${modal.username}? (Warning count will increase)`, btnColor: '#f59e0b' };
-      case 'delete': return { title: 'Soft Delete User?', text: `Soft delete ${modal.username}? This is an Admin Level 2 action.`, btnColor: '#dc2626' };
-      case 'restore': return { title: 'Restore User?', text: `Restore ${modal.username} from soft-delete?`, btnColor: '#10b981' };
-      default: return { title: '', text: '', btnColor: '' };
-    }
-  };
-  
-  const content = getModalContent();
-
-  const getActiveData = (): User[] => {
-    switch (activeTab) {
-      case 'currentUsers': return currentUsers;
-      case 'deletedUsers': return deletedUsers;
-      case 'currentAdmins': return currentAdmins;
-      case 'deletedAdmins': return deletedAdmins;
-      default: return [];
     }
   };
 
-  const activeData = getActiveData();
+  const executeCreateAdmin = async () => {
+      const { username, email, password, adminLevel: level } = createAdminModal;
+      closeCreateAdminModal();
+      if (!username || !email || !password || !level) {
+          alert('All fields required.');
+          return;
+      }
+      const token = localStorage.getItem('token');
+      try {
+          const res = await fetch(`${API_BASE}/api/admin/create-admin`, {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username, email, password, adminLevel: level })
+          });
+          if (res.status === 403) alert('🚫 Creation Failed: Level 2 privilege required.');
+          const result = await res.json();
+          if (res.ok) { alert(`Success: ${result.msg}`); fetchAllUsers(); }
+      } catch (err) { alert('Error during admin creation.'); }
+  };
 
-  return (
-    <div className="admin-panel">
-        <h2>User Management Overview</h2>
+  const getModalContent = () => {
+    switch (modal.action) {
+      case 'ban': return { title: 'Confirm Ban?', text: `Ban ${modal.username}?`, btnColor: '#dc2626' };
+      case 'unban': return { title: 'Confirm Unban?', text: `Unban ${modal.username}?`, btnColor: '#10b981' };
+      case 'warn': return { title: 'Warn User?', text: `Send warning to ${modal.username}?`, btnColor: '#f59e0b' };
+      case 'delete': return { title: 'Soft Delete?', text: `Soft delete ${modal.username}?`, btnColor: '#dc2626' };
+      case 'restore': return { title: 'Restore User?', text: `Restore ${modal.username}?`, btnColor: '#10b981' };
+      default: return { title: '', text: '', btnColor: '' };
+    }
+  };
+
+  const content = getModalContent();
+  const activeData = activeTab === 'currentUsers' ? currentUsers : activeTab === 'deletedUsers' ? deletedUsers : activeTab === 'currentAdmins' ? currentAdmins : deletedAdmins;
+  
+  const isAdminTab = activeTab.includes('Admins');
+  const isDeletedTab = activeTab.includes('deleted');
+  const tableColSpan = isAdminTab ? 7 : 9;
+
+  return (
+    <div className="admin-panel">
+        <h2>User Management Overview</h2>
 
         <div className="tab-navigation">
-          <button 
-            className={activeTab === 'currentUsers' ? 'nav-button active-tab' : 'nav-button'} 
-            onClick={() => setActiveTab('currentUsers')}
-          >
-            Current Users
-          </button>
-          <button 
-            className={activeTab === 'currentAdmins' ? 'nav-button active-tab' : 'nav-button'} 
-            onClick={() => setActiveTab('currentAdmins')}
-          >
-            Current Admins
-          </button>
-          
+          <button className={activeTab === 'currentUsers' ? 'nav-button active-tab' : 'nav-button'} onClick={() => setActiveTab('currentUsers')}>Current Users</button>
+          <button className={activeTab === 'currentAdmins' ? 'nav-button active-tab' : 'nav-button'} onClick={() => setActiveTab('currentAdmins')}>Current Admins</button>
           {adminLevel >= 2 && (
             <>
-              <button 
-                className={activeTab === 'deletedUsers' ? 'nav-button active-tab' : 'nav-button'} 
-                onClick={() => setActiveTab('deletedUsers')}
-              >
-                Deleted Users
-              </button>
-              <button 
-                className={activeTab === 'deletedAdmins' ? 'nav-button active-tab' : 'nav-button'} 
-                onClick={() => setActiveTab('deletedAdmins')}
-              >
-                Deleted Admins
-              </button>
+              <button className={activeTab === 'deletedUsers' ? 'nav-button active-tab' : 'nav-button'} onClick={() => setActiveTab('deletedUsers')}>Deleted Users</button>
+              <button className={activeTab === 'deletedAdmins' ? 'nav-button active-tab' : 'nav-button'} onClick={() => setActiveTab('deletedAdmins')}>Deleted Admins</button>
             </>
           )}
         </div>
         
-        <h3>{activeTab.replace(/([A-Z])/g, ' $1').trim()} ({activeData.length})</h3>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <h3>{activeTab.replace(/([A-Z])/g, ' $1').trim()} ({activeData.length})</h3>
+          {adminLevel >= 2 && <button onClick={openCreateAdminModal} className="btn-action" style={{backgroundColor: '#059669', padding: '10px 20px'}}>+ Create New Admin</button>}
+        </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Joined</th>
-              <th>Points</th>
-              <th>Warnings</th>
-              <th>{activeTab.includes('Admins') ? 'Level' : 'Status'}</th>
-              <th>Actions</th>
-              {adminLevel >= 2 && (activeTab === 'deletedUsers' || activeTab === 'deletedAdmins' || activeTab === 'currentUsers') && <th>Delete/Restore</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={9} style={{textAlign: 'center'}}>Loading...</td></tr>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Username</th><th>Email</th><th>Joined</th>
+              {!isAdminTab && <><th>Points</th><th>Warnings</th></>}
+              <th>{isAdminTab ? 'Level' : 'Status'}</th>
+              {!isAdminTab && !isDeletedTab && <th>Actions</th>}
+              {adminLevel >= 2 && <th>Manage</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr><td colSpan={tableColSpan} style={{textAlign: 'center'}}>Loading...</td></tr>
             ) : activeData.length === 0 ? (
-              <tr><td colSpan={9} style={{textAlign: 'center'}}>No users found in this category.</td></tr>
+              <tr><td colSpan={tableColSpan} style={{textAlign: 'center'}}>No results found.</td></tr>
             ) : ( activeData.map(user => (
-              <React.Fragment key={user._id}>
-              <tr>
-                <td><button className='expandButton' onClick={() => toggleExpand(user._id)}>{expanded[user._id] ? '▾' : '›'}</button></td>
-                <td>{user.username}</td>
-                <td>{user.email}</td>
-                <td>{new Date(user.join_date).toLocaleDateString()}</td>
-                <td>{user.total_points || 0}</td>
-                <td>{user.warnCount || 0}</td>
-                <td>{activeTab.includes('Admins') ? `Level ${user.adminLevel}` : (user.isBanned ? 'Banned' : 'Active')}</td>
-                <td style={{textAlign: 'center', minWidth: '150px'}}>
-                  {/* Ban/Warn/Unban only for Current Users */}
-                  {activeTab === 'currentUsers' && (
-                    user.isBanned ? (
-                        // 🛑 NEW: Unban button for banned users 🛑
+              <React.Fragment key={user._id}>
+              <tr>
+                <td><button className='expandButton' onClick={() => toggleExpand(user._id)}>{expanded[user._id] ? '▾' : '›'}</button></td>
+                <td>{user.username}</td><td>{user.email}</td><td>{new Date(user.join_date).toLocaleDateString()}</td>
+                {!isAdminTab && <><td>{user.total_points || 0}</td><td>{user.warnCount || 0}</td></>}
+                <td>{isAdminTab ? `Level ${user.adminLevel}` : (user.isBanned ? 'Banned' : 'Active')}</td>
+                
+                {!isAdminTab && !isDeletedTab && (
+                  <td style={{textAlign: 'center', minWidth: '150px'}}>
+                    {user.isBanned ? (
                         <button onClick={() => openModal('unban', user)} className="btn-action" style={{background: '#10b981'}}>Unban</button>
                     ) : (
-                      <>
-                        <button onClick={() => openModal('ban', user)} className="btn-action" style={{background: 'red'}}>Ban</button>
-                        <button onClick={() => openModal('warn', user)} className="btn-action" style={{background: 'orange'}}>Warn</button>
-                      </>
-                    )
-                  )}
-                  {activeTab === 'currentAdmins' && adminLevel >= 2 && (
-                    <button onClick={() => openModal('delete', user)} className="btn-delete" style={{backgroundColor: '#e38400'}}>Demote/Delete</button>
-                  )}
-                  {activeTab === 'currentAdmins' && adminLevel === 1 && (
-                      <span style={{color: '#9ca3af'}}>View Only</span>
-                  )}
-                </td>
-                
-                {adminLevel >= 2 && (activeTab === 'deletedUsers' || activeTab === 'deletedAdmins' || activeTab === 'currentUsers') && (
-                  <td style={{textAlign: 'center'}}>
-                    {(activeTab === 'deletedUsers' || activeTab === 'deletedAdmins') ? (
-                      <button onClick={() => openModal('restore', user)} className="btn-action" style={{background: 'green'}}>Restore</button>
-                    ) : (
-                      <button onClick={() => openModal('delete', user)} className="btn-delete">X</button>
+                      <><button onClick={() => openModal('ban', user)} className="btn-action" style={{background: 'red'}}>Ban</button><button onClick={() => openModal('warn', user)} className="btn-action" style={{background: 'orange'}}>Warn</button></>
                     )}
                   </td>
                 )}
-              </tr>
 
-              {expanded[user._id] && (
-                <tr id={`details-${user._id}`} className="details-row">
-                  <td colSpan={9} className="details-cell">
-                    <div className="details-grid">
-                      <div><strong>User ID:</strong> {user.user_id}</div>
-                      <div><strong>Current Streak:</strong> {user.current_streak}</div>
-                      <div><strong>Total Tasks Completed:</strong> {user.total_tasks_completed}</div>
-                      {user.adminLevel > 0 && <div><strong>Admin Status:</strong> Level {user.adminLevel}</div>}
-                    </div>
-                  </td>
-                </tr>
-              )}
-              </React.Fragment>
-            )))}
-          </tbody>
-        </table>
+                {adminLevel >= 2 && (
+                  <td style={{textAlign: 'center'}}>
+                    {isDeletedTab ? (
+                      <button onClick={() => openModal('restore', user)} className="btn-action" style={{background: 'green'}}>Restore</button>
+                    ) : (
+                      <button onClick={() => openModal('delete', user)} className="btn-delete">Demote/Delete</button>
+                    )}
+                  </td>
+                )}
+              </tr>
+              {expanded[user._id] && (
+                <tr className="details-row">
+                  <td colSpan={tableColSpan} className="details-cell">
+                    <div className="details-grid">
+                      <div><strong>User ID:</strong> {user.user_id}</div>
+                      <div><strong>Current Streak:</strong> {user.current_streak}</div>
+                      <div><strong>Total Tasks:</strong> {user.total_tasks_completed}</div>
+                    </div>
+                  </td>
+                </tr>
+              )}
+              </React.Fragment>
+            )))}
+          </tbody>
+        </table>
 
-        {/* 🛑 MODAL IMPLEMENTATION (Restored to Overlay) 🛑 */}
-        {modal.isOpen && (
-        <div className="modal-overlay"> 
-          <div className="modal-box">
-            <h3 className="modal-title">{content.title}</h3>
-            <p className="modal-text">{content.text}</p>
-            <div className="modal-buttons">
-              <button className="btn-cancel" onClick={closeModal}>Cancel</button>
-              <button className="btn-confirm" onClick={executeAction} style={{ backgroundColor: content.btnColor }}>Yes, Do it</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+        {modal.isOpen && (
+        <div className="modal-overlay"> 
+          <div className="modal-box">
+            <h3 className="modal-title">{content.title}</h3>
+            <p className="modal-text">{content.text}</p>
+            <div className="modal-buttons">
+              <button className="btn-cancel" onClick={closeModal}>Cancel</button>
+              <button className="btn-confirm" onClick={executeAction} style={{ backgroundColor: content.btnColor }}>Confirm</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+        {createAdminModal.isOpen && (
+            <div className="modal-overlay">
+                <div className="modal-box">
+                    <h3 className="modal-title">Create New Admin</h3>
+                    <div className="admin-form-group"><label>Username</label><input type="text" value={createAdminModal.username} onChange={(e) => setCreateAdminModal({...createAdminModal, username: e.target.value})}/></div>
+                    <div className="admin-form-group"><label>Email</label><input type="email" value={createAdminModal.email} onChange={(e) => setCreateAdminModal({...createAdminModal, email: e.target.value})}/></div>
+                    <div className="admin-form-group"><label>Password</label><input type="password" value={createAdminModal.password} onChange={(e) => setCreateAdminModal({...createAdminModal, password: e.target.value})}/></div>
+                    <div className="admin-form-group"><label>Admin Level</label>
+                        <select value={createAdminModal.adminLevel} onChange={(e) => setCreateAdminModal({...createAdminModal, adminLevel: parseInt(e.target.value, 10)})}>
+                            <option value={1}>Level 1 (Moderator)</option>
+                            <option value={2}>Level 2 (Super Admin)</option>
+                        </select>
+                    </div>
+                    <div className="modal-buttons">
+                        <button className="btn-cancel" onClick={closeCreateAdminModal}>Cancel</button>
+                        <button className="btn-confirm" onClick={executeCreateAdmin} style={{ backgroundColor: '#059669' }}>Create Admin</button>
+                    </div>
+                </div>
+            </div>
+        )}
+    </div>
+  );
 };
 export default AdminDashboard;
