@@ -28,7 +28,7 @@ async function fetchUserStats(): Promise<StatsResponse> {
   const token = localStorage.getItem("token");
   if (!token) {
     throw new Error("No authentication token found");
-  }
+}
 
   const response = await fetch(`${API_BASE}/api/stats`, {
     method: "GET",
@@ -55,14 +55,14 @@ async function loadStats(): Promise<void> {
   try {
     const stats = await fetchUserStats();
 
-    const usernameEl = document.getElementById("username");
-    const totalCompletedEl = document.getElementById("total-stats-completed");
-    const totalStartedEl = document.getElementById("total-stats-started");
-    const currentStreakEl = document.getElementById("current-streak");
-    const highestStreakEl = document.getElementById("highest-streak");
-    const daysCompletedEl = document.getElementById("days-completed");
-    const tasksMissedEl = document.getElementById("tasks-missed");
-    const currentPointsEl = document.getElementById("current-points");
+  const usernameEl = document.getElementById("username");
+  const totalCompletedEl = document.getElementById("total-stats-completed");
+  const totalStartedEl = document.getElementById("total-stats-started");
+  const currentStreakEl = document.getElementById("current-streak");
+  const highestStreakEl = document.getElementById("highest-streak");
+  const daysCompletedEl = document.getElementById("days-completed");
+  const tasksMissedEl = document.getElementById("tasks-missed");
+  const currentPointsEl = document.getElementById("current-points");
 
     if (usernameEl) usernameEl.textContent = stats.username;
     if (totalCompletedEl) totalCompletedEl.textContent = String(stats.total_tasks_completed);
@@ -137,7 +137,7 @@ async function loadCalendarHeatmap(): Promise<void> {
     // Fetch calendar data from API
     const calendarData = await getCalendarData();
 
-    const now = new Date();
+  const now = new Date();
     // Use local time (not UTC) to match user's timezone (EST)
     // Start 11 months ago to show 12 months total
     const start = new Date(now.getFullYear(), now.getMonth() - 11, 1);
@@ -145,29 +145,29 @@ async function loadCalendarHeatmap(): Promise<void> {
     // This ensures December 2025 is shown when we're in December 2025
     const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
-    const cal = new globalAny.CalHeatMap() as CalHeatMap;
-    cal.init({
-      itemSelector: "#cal-heatmap",
-      domain: "month",
-      subDomain: "day",
-      cellSize: 13,
+  const cal = new globalAny.CalHeatMap() as CalHeatMap;
+  cal.init({
+    itemSelector: "#cal-heatmap",
+    domain: "month",
+    subDomain: "day",
+    cellSize: 13,
       // Remove range when using explicit start/end dates
-      domainGutter: 8,
-      displayLegend: true,
-      start: start,
+    domainGutter: 8,
+    displayLegend: true,
+    start: start,
       end: end, // Explicitly set end date to include current month (first day of next month)
       data: calendarData,
-      tooltip: true,
-      legend: [1, 2, 3, 4, 5],
-      legendColors: {
-        min: "#ede9fe",
-        max: "#7c3aed",
-        empty: "#f3f4f6",
-        colors: ["#ede9fe", "#c4b5fd", "#a78bfa", "#7c3aed"]
-      },
-      label: { position: "top" },
-      domainLabelFormat: "%b '%y"
-    });
+    tooltip: true,
+    legend: [1, 2, 3, 4, 5],
+    legendColors: {
+      min: "#ede9fe",
+      max: "#7c3aed",
+      empty: "#f3f4f6",
+      colors: ["#ede9fe", "#c4b5fd", "#a78bfa", "#7c3aed"]
+    },
+    label: { position: "top" },
+    domainLabelFormat: "%b '%y"
+  });
   } catch (error) {
     console.error("Error loading calendar heatmap:", error);
   }
