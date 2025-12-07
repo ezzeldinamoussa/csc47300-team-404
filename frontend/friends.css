@@ -66,16 +66,15 @@ body {
 
 /* Friends Page */
 .leaderboard {
-    width: 500px;
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    /* 🛑 NEW: Purple border added to match tasks page style */
-    border: 2px solid #7c3aed;
+  width: 500px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  border: 2px solid #7c3aed;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .leaderboard-header {
