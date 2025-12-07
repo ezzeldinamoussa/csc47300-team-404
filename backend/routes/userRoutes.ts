@@ -54,20 +54,34 @@ router.post('/:id/warn', adminMiddleware, async (req, res) => {
 // 4. Delete User - Admin only
 router.delete('/:id', adminMiddleware, async (req, res) => {
     try {
-        // 1. Find the user to get their user_id before deletion
+        // 1. Find the user to get their user_id and username before deletion
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ msg: 'User not found' });
 
         const userIdToDelete = user.user_id; // Get the user_id (the foreign key)
+        const usernameToDelete = user.username; // Get the username for friends cleanup
 
         // 2. Delete the user from the User collection
         await User.findByIdAndDelete(req.params.id);
         
-        // 🛑 3. DELETE ASSOCIATED DAILY RECORDS 🛑
+        // 3. DELETE ASSOCIATED DAILY RECORDS
         // Use deleteMany to remove all records linked to this user_id
         const deleteResult = await DailyRecord.deleteMany({ user_id: userIdToDelete });
-        
         console.log(`Deleted ${deleteResult.deletedCount} daily records for user ${userIdToDelete}.`);
+
+        // 4. CLEAN UP FRIENDS LISTS - Remove deleted user from all users' friends arrays
+        const friendsCleanupResult = await User.updateMany(
+            { friends: usernameToDelete },
+            { $pull: { friends: usernameToDelete } }
+        );
+        console.log(`Removed ${usernameToDelete} from ${friendsCleanupResult.modifiedCount} users' friends lists.`);
+
+        // 5. CLEAN UP FRIEND REQUESTS - Remove deleted user from all users' friendRequests arrays
+        const requestsCleanupResult = await User.updateMany(
+            { friendRequests: usernameToDelete },
+            { $pull: { friendRequests: usernameToDelete } }
+        );
+        console.log(`Removed ${usernameToDelete} from ${requestsCleanupResult.modifiedCount} users' friend requests.`);
 
         res.json({ msg: 'User and all associated data deleted successfully' });
     } catch (err) {

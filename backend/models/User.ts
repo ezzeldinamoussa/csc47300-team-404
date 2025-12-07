@@ -19,6 +19,10 @@ export interface IUser extends Document {
   last_rollover_date: string | null;
   badges: { name: string; earned_on: string }[];
   
+  // Friends fields
+  friends?: string[]; // Array of usernames
+  friendRequests?: string[]; // Array of usernames who sent requests
+  
   //Admin Fields
   isAdmin?: boolean;
   isBanned?: boolean;
@@ -96,6 +100,16 @@ const userSchema = new mongoose.Schema({
       earned_on: String,
     },
   ],
+
+  // Friends fields
+  friends: {
+    type: [String],
+    default: [],
+  },
+  friendRequests: {
+    type: [String],
+    default: [],
+  },
 
   //Admin Fields
   isAdmin: { 

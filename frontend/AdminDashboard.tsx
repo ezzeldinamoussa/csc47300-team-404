@@ -18,10 +18,54 @@ interface User {
 
 interface ModalState {
   isOpen: boolean;
-  action: 'ban' | 'warn' | 'delete' | '';
+  action: 'ban' | 'unban' | 'warn' | 'delete' | '';
   userId: string;
   username: string;
 }
+
+// Notification system
+type NotificationType = 'success' | 'error' | 'info';
+
+const showNotification = (message: string, type: NotificationType = 'info', duration: number = 4000): void => {
+  const container = document.getElementById('notification-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = `notification-toast ${type}`;
+
+  const icons = {
+    success: '✓',
+    error: '✕',
+    info: 'ℹ'
+  };
+
+  toast.innerHTML = `
+    <span class="notification-icon">${icons[type]}</span>
+    <span class="notification-message">${message}</span>
+    <button class="notification-close" aria-label="Close">×</button>
+  `;
+
+  container.appendChild(toast);
+
+  // Auto-remove after duration
+  const autoRemove = setTimeout(() => {
+    removeNotification(toast);
+  }, duration);
+
+  // Manual close button
+  const closeBtn = toast.querySelector('.notification-close');
+  closeBtn?.addEventListener('click', () => {
+    clearTimeout(autoRemove);
+    removeNotification(toast);
+  });
+};
+
+const removeNotification = (toast: HTMLElement): void => {
+  toast.classList.add('hiding');
+  setTimeout(() => {
+    toast.remove();
+  }, 300);
+};
 
 const AdminDashboard: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -72,7 +116,7 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const openModal = (action: 'ban' | 'warn' | 'delete', user: User) => {
+  const openModal = (action: 'ban' | 'unban' | 'warn' | 'delete', user: User) => {
     setModal({ isOpen: true, action, userId: user._id, username: user.username });
   };
 
@@ -89,9 +133,12 @@ const AdminDashboard: React.FC = () => {
     let url = '';
     let method = 'POST';
 
-    if (modal.action === 'ban') url = `${API_BASE}/api/users/${modal.userId}/ban`;
-    else if (modal.action === 'warn') url = `${API_BASE}/api/users/${modal.userId}/warn`;
-    else if (modal.action === 'delete') {
+    if (modal.action === 'ban' || modal.action === 'unban') {
+      // Both ban and unban use the same endpoint (it toggles the status)
+      url = `${API_BASE}/api/users/${modal.userId}/ban`;
+    } else if (modal.action === 'warn') {
+      url = `${API_BASE}/api/users/${modal.userId}/warn`;
+    } else if (modal.action === 'delete') {
       url = `${API_BASE}/api/users/${modal.userId}`;
       method = 'DELETE';
     }
@@ -120,9 +167,10 @@ const AdminDashboard: React.FC = () => {
 
         // Refresh user list after successful action
         fetchUsers();
+        showNotification('Action completed successfully', 'success');
       } catch (err) {
         console.error('Error executing action:', err);
-        alert('Failed to execute action. Please try again.');
+        showNotification('Failed to execute action. Please try again.', 'error');
       }
     }
   };
@@ -130,6 +178,7 @@ const AdminDashboard: React.FC = () => {
   const getModalContent = () => {
     switch (modal.action) {
       case 'ban': return { title: 'Ban User?', text: `Ban ${modal.username}?`, btnColor: '#dc2626' };
+      case 'unban': return { title: 'Unban User?', text: `Unban ${modal.username}?`, btnColor: '#16a34a' };
       case 'warn': return { title: 'Warn User?', text: `Warn ${modal.username}?`, btnColor: '#f59e0b' };
       case 'delete': return { title: 'Delete User?', text: `Permanently delete ${modal.username}?`, btnColor: '#dc2626' };
       default: return { title: '', text: '', btnColor: '' };
@@ -158,7 +207,9 @@ const AdminDashboard: React.FC = () => {
                 <td>{user.total_points || 0}</td>
                 <td>{user.warnCount || 0}</td>
                 <td style={{textAlign: 'center'}}>
-                  {user.isBanned ? <span style={{color: 'red'}}>BANNED</span> : (
+                  {user.isBanned ? (
+                    <button onClick={() => openModal('unban', user)} className="btn-action" style={{background: '#16a34a'}}>Unban</button>
+                  ) : (
                     <>
                       <button onClick={() => openModal('ban', user)} className="btn-action" style={{background: 'red'}}>Ban</button>
                       <button onClick={() => openModal('warn', user)} className="btn-action" style={{background: 'orange'}}>Warn</button>
