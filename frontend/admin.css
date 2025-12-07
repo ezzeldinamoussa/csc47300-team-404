@@ -1,152 +1,181 @@
-.admin-panel { 
-    width: 90%; 
-    max-width: 1100px; 
-    margin: 50px auto; 
-    background: white; 
-    padding: 30px; 
-    border-radius: 15px; 
-    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.15); 
-    border: 2px solid #7c3aed; 
+/* backend/public/admin.css */
+
+/* --- Admin Dashboard Layout --- */
+.admin-panel {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .admin-panel h2 {
-    color: #5b21b6;
-    margin-bottom: 25px;
-    font-size: 1.8rem;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
-}
-
-table { 
-    width: 100%; 
-    border-collapse: separate; 
-    border-spacing: 0; 
-    border: 2px solid #7c3aed; 
-    border-radius: 8px; 
-    overflow: hidden;
-    font-family: inherit;
-}
-
-th { 
-    background-color: #8b5cf6; 
-    color: white; 
-    padding: 16px; 
-    text-align: left; 
-    font-weight: 600;
-    border-bottom: 2px solid #7c3aed;
-    border-right: 1px solid #7c3aed; 
-}
-
-th:last-child { border-right: none; }
-
-td { 
-    padding: 14px 16px; 
-    border-bottom: 1px solid #e9d5ff; 
-    border-right: 1px solid #c4b5fd; 
     color: #333;
-    background-color: white; 
-    vertical-align: middle;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-td:last-child { border-right: none; } 
-tr:last-child td { border-bottom: none; }
+/* --- Table Styling --- */
+.admin-panel table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
 
-tr:hover td { background-color: #f3e8ff; }
+.admin-panel th, .admin-panel td {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    text-align: left;
+}
 
-/* ACTION BUTTONS */
-.btn-action {
+.admin-panel th {
+    background-color: #f4f4f4;
     font-weight: 600;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-right: 5px;
-    color: white;
-    transition: transform 0.1s;
 }
-.btn-action:hover { transform: scale(1.05); }
+
+/* --- Action Buttons --- */
+.btn-action, .btn-delete {
+    padding: 5px 10px;
+    margin: 0 3px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.btn-action:hover, .btn-delete:hover {
+    opacity: 0.85;
+}
 
 .btn-delete {
-    background-color: transparent;
-    color: #dc2626; 
+    background-color: #dc2626; /* Red for Delete */
+}
+
+/* --- Expansion Details --- */
+.details-row {
+    background-color: #fafafa;
+}
+
+.details-cell {
+    padding: 15px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    padding-left: 20px;
+}
+
+.expandButton {
+    background: none;
     border: none;
-    font-weight: 900;
-    font-size: 1.4rem;
-    padding: 4px 12px;
+    font-size: 1.2em;
     cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s;
+    padding: 0 5px;
+    transition: transform 0.2s;
 }
 
-.btn-delete:hover {
-    background-color: #fee2e2;
-    transform: scale(1.2);
+/* --- TAB NAVIGATION STYLES --- */
+.tab-navigation {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+    gap: 5px;
 }
 
+.nav-button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #f4f4f4; 
+    color: #333;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    transition: background-color 0.3s, color 0.3s;
+    text-transform: uppercase;
+}
+
+.nav-button:hover:not(.active-tab) {
+    background-color: #e0e0e0;
+}
+
+.nav-button.active-tab {
+    background-color: #10b981; /* Green color for active tab */
+    color: white;
+    /* Remove border-bottom from the button itself and let the div handle it */
+    position: relative; /* Allows button to float over the bottom border of the tab-navigation div */
+    margin-bottom: -2px; /* Pulls the button slightly down to cover the border */
+}
+
+/* --- MODAL STYLES (Restored/Added) --- */
 .modal-overlay {
-    display: none;
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5); 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black backdrop */
+    display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000; /* Ensure it's on top of everything */
 }
 
 .modal-box {
-    background: white;
+    background-color: white;
     padding: 30px;
-    border-radius: 12px;
-    width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     max-width: 400px;
     text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    border: 2px solid #7c3aed;
-    animation: popIn 0.3s ease;
+    animation: fadeIn 0.3s ease-out;
 }
 
 .modal-title {
-    color: #5b21b6;
-    margin-bottom: 10px;
-    font-size: 1.5rem;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 15px;
 }
 
 .modal-text {
     color: #666;
     margin-bottom: 25px;
-    font-size: 1rem;
 }
 
 .modal-buttons {
     display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.btn-confirm {
-    background-color: #7c3aed;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
+    justify-content: space-around;
 }
 
 .btn-cancel {
-    background-color: #e5e7eb;
-    color: #374151;
+    background-color: #9ca3af; /* Gray */
+    color: white;
     padding: 10px 20px;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
-    font-weight: bold;
+    transition: background-color 0.2s;
 }
 
-.btn-confirm:hover { background-color: #6d28d9; }
-.btn-cancel:hover { background-color: #d1d5db; }
+.btn-cancel:hover {
+    background-color: #6b7280;
+}
 
-@keyframes popIn {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+.btn-confirm {
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }
