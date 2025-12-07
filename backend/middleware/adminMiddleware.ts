@@ -1,3 +1,4 @@
+// backend/middleware/adminMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
@@ -60,4 +61,3 @@ export const adminMiddleware = async (
     res.status(401).json({ msg: 'Token is not valid' });
   }
 };
-
