@@ -5,6 +5,8 @@ interface LeaderboardUser {
   total_points: number;
   current_streak: number;
   highest_streak: number;
+  isBanned?: boolean;
+  isDeleted?: boolean;
 }
 
 interface SearchResult {
@@ -145,10 +147,24 @@ function displayLeaderboard(users: LeaderboardUser[], currentUsername: string | 
   users.forEach((user) => {
     const isCurrentUser = currentUsername && user.username === currentUsername;
     
+    // Determine status label
+    let statusLabel = '';
+    let statusColor = '';
+    if (user.isDeleted) {
+      statusLabel = ' (Deleted)';
+      statusColor = '#dc2626'; // Red
+    } else if (user.isBanned) {
+      statusLabel = ' (Banned)';
+      statusColor = '#f59e0b'; // Orange
+    }
+    
     const li = document.createElement('li');
     li.innerHTML = `
       <div>
-        <span class="name">${user.username}${isCurrentUser ? ' (You)' : ''}</span>
+        <span class="name">
+          ${user.username}${isCurrentUser ? ' (You)' : ''}
+          ${statusLabel ? `<span style="color: ${statusColor}; font-weight: 600; margin-left: 4px;">${statusLabel}</span>` : ''}
+        </span>
         <div style="font-size: 12px; color: #666; margin-top: 4px;">
           ${user.current_streak} day streak | Best: ${user.highest_streak}
         </div>

@@ -143,17 +143,12 @@ const AdminDashboard: React.FC = () => {
           throw new Error(`Failed to fetch ${key}: ${res.status}`);
         }
 
-        // Refresh user list after successful action
-        fetchUsers();
-        showNotification('Action completed successfully', 'success');
-      } catch (err) {
-        console.error('Error executing action:', err);
-        showNotification('Failed to execute action. Please try again.', 'error');
         const data: User[] = await res.json();
         setters[key as AdminTab]!(data);
         return data;
       } catch (err) {
         console.error(`Error fetching ${key}:`, err);
+        setters[key as AdminTab]!([]);
         return [];
       }
     });
@@ -206,27 +201,27 @@ const AdminDashboard: React.FC = () => {
         }
         
         if (modal.action === 'delete' && res.status === 403) {
-            alert('🚫 Deletion Failed: Only Admin Level 2 users can soft-delete user accounts.');
+            showNotification('🚫 Deletion Failed: Only Admin Level 2 users can soft-delete user accounts.', 'error');
             return; 
         }
         
         if (res.status === 403) {
-            alert('🚫 Action Failed: You do not have the required admin privilege for this action.');
+            showNotification('🚫 Action Failed: You do not have the required admin privilege for this action.', 'error');
             return;
         }
 
-        if (!res.ok) {
-          throw new Error(`Action failed: ${res.status}`);
-        }
+        if (!res.ok) {
+          throw new Error(`Action failed: ${res.status}`);
+        }
         
         const result = await res.json();
-        alert(`Success: ${result.msg || 'Action executed successfully.'}`);
+        showNotification(result.msg || 'Action executed successfully.', 'success');
 
-        fetchAllUsers();
-      } catch (err) {
-        console.error('Error executing action:', err);
-        alert('A server error occurred. Please check the console.');
-      }
+        fetchAllUsers();
+      } catch (err) {
+        console.error('Error executing action:', err);
+        showNotification('A server error occurred. Please check the console.', 'error');
+      }
     }
   };
 

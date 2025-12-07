@@ -52,9 +52,12 @@ router.get('/leaderboard', authMiddleware, async (req: AuthRequest, res: Respons
     const friendUsernames = currentUser.friends || [];
     const allUsernames = [currentUser.username, ...friendUsernames];
 
+    // Include ALL users (banned/deleted too) - no filtering
     const users = await User.find({
       username: { $in: allUsernames }
-    }).select('username total_points current_streak highest_streak').sort({ total_points: -1 });
+    }).select('username total_points current_streak highest_streak isBanned isDeleted').sort({ total_points: -1 });
+
+    // NO cleanup - keep friends lists as-is
 
     res.json(users);
   } catch (err: any) {

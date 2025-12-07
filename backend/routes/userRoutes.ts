@@ -2,9 +2,7 @@
 import express, { Router, Request, Response } from 'express';
 import User from '../models/User';
 import DailyRecord from '../models/DailyRecord';
-// 🛑 IMPORTS from Version 1 & 2 🛑
-import { adminMiddleware } from '../middleware/adminMiddleware'; 
-import { adminAuthMiddleware } from './adminRoutes'; // Assumes adminAuthMiddleware is exported from adminRoutes
+import { adminAuthMiddleware } from './adminRoutes';
 
 const router: Router = express.Router();
 
