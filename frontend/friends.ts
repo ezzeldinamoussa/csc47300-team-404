@@ -119,29 +119,14 @@ async function fetchLeaderboard(): Promise<void> {
     }
 
     if (!res.ok) {
-      const errorData = await res.json().catch(() => ({ msg: 'Failed to fetch leaderboard' }));
-      throw new Error(errorData.msg || 'Failed to fetch leaderboard');
+      throw new Error('Failed to fetch leaderboard');
     }
 
     const users: LeaderboardUser[] = await res.json();
     const username = await getCurrentUsername();
-    
-    // Handle case where users array might be empty or missing expected friends
-    // (This could happen if friends were deleted/banned - backend auto-cleans them)
-    if (users.length === 0) {
-      // This is fine - user just has no friends yet
-    } else if (username) {
-      // Check if current user is in the list (should always be)
-      const currentUserInList = users.find(u => u.username === username);
-      if (!currentUserInList) {
-        console.warn('Current user not found in leaderboard results');
-      }
-    }
-    
     displayLeaderboard(users, username);
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error fetching leaderboard:', err);
-    showNotification('Failed to load leaderboard. Please refresh the page.', 'error');
   }
 }
 

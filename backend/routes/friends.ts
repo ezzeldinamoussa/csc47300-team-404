@@ -38,7 +38,6 @@ const router = express.Router();
 
 // GET /api/friends/leaderboard
 // Returns user + their friends sorted by total_points (descending)
-// Filters out banned users and auto-cleans invalid friends
 router.get('/leaderboard', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user_id) {
@@ -53,22 +52,9 @@ router.get('/leaderboard', authMiddleware, async (req: AuthRequest, res: Respons
     const friendUsernames = currentUser.friends || [];
     const allUsernames = [currentUser.username, ...friendUsernames];
 
-    // Filter out banned users and only get users that exist
     const users = await User.find({
-      username: { $in: allUsernames },
-      isBanned: { $ne: true } // Exclude banned users
+      username: { $in: allUsernames }
     }).select('username total_points current_streak highest_streak').sort({ total_points: -1 });
-
-    // Auto-cleanup: Remove any friends that don't exist or are banned from current user's friends list
-    const validFriendUsernames = users.map(u => u.username).filter(u => u !== currentUser.username);
-    const invalidFriends = friendUsernames.filter(f => !validFriendUsernames.includes(f));
-    
-    if (invalidFriends.length > 0) {
-      // Remove invalid friends (deleted or banned) from current user's friends list
-      currentUser.friends = currentUser.friends?.filter(f => !invalidFriends.includes(f)) || [];
-      await currentUser.save();
-      console.log(`Auto-cleaned ${invalidFriends.length} invalid friend(s) from user ${currentUser.username}'s friends list.`);
-    }
 
     res.json(users);
   } catch (err: any) {

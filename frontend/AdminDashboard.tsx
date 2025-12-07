@@ -18,7 +18,7 @@ interface User {
 
 interface ModalState {
   isOpen: boolean;
-  action: 'ban' | 'unban' | 'warn' | 'delete' | '';
+  action: 'ban' | 'warn' | 'delete' | '';
   userId: string;
   username: string;
 }
@@ -116,7 +116,7 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const openModal = (action: 'ban' | 'unban' | 'warn' | 'delete', user: User) => {
+  const openModal = (action: 'ban' | 'warn' | 'delete', user: User) => {
     setModal({ isOpen: true, action, userId: user._id, username: user.username });
   };
 
@@ -133,12 +133,9 @@ const AdminDashboard: React.FC = () => {
     let url = '';
     let method = 'POST';
 
-    if (modal.action === 'ban' || modal.action === 'unban') {
-      // Both ban and unban use the same endpoint (it toggles the status)
-      url = `${API_BASE}/api/users/${modal.userId}/ban`;
-    } else if (modal.action === 'warn') {
-      url = `${API_BASE}/api/users/${modal.userId}/warn`;
-    } else if (modal.action === 'delete') {
+    if (modal.action === 'ban') url = `${API_BASE}/api/users/${modal.userId}/ban`;
+    else if (modal.action === 'warn') url = `${API_BASE}/api/users/${modal.userId}/warn`;
+    else if (modal.action === 'delete') {
       url = `${API_BASE}/api/users/${modal.userId}`;
       method = 'DELETE';
     }
@@ -178,7 +175,6 @@ const AdminDashboard: React.FC = () => {
   const getModalContent = () => {
     switch (modal.action) {
       case 'ban': return { title: 'Ban User?', text: `Ban ${modal.username}?`, btnColor: '#dc2626' };
-      case 'unban': return { title: 'Unban User?', text: `Unban ${modal.username}?`, btnColor: '#16a34a' };
       case 'warn': return { title: 'Warn User?', text: `Warn ${modal.username}?`, btnColor: '#f59e0b' };
       case 'delete': return { title: 'Delete User?', text: `Permanently delete ${modal.username}?`, btnColor: '#dc2626' };
       default: return { title: '', text: '', btnColor: '' };
@@ -207,9 +203,7 @@ const AdminDashboard: React.FC = () => {
                 <td>{user.total_points || 0}</td>
                 <td>{user.warnCount || 0}</td>
                 <td style={{textAlign: 'center'}}>
-                  {user.isBanned ? (
-                    <button onClick={() => openModal('unban', user)} className="btn-action" style={{background: '#16a34a'}}>Unban</button>
-                  ) : (
+                  {user.isBanned ? <span style={{color: 'red'}}>BANNED</span> : (
                     <>
                       <button onClick={() => openModal('ban', user)} className="btn-action" style={{background: 'red'}}>Ban</button>
                       <button onClick={() => openModal('warn', user)} className="btn-action" style={{background: 'orange'}}>Warn</button>
